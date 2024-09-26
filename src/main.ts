@@ -1,4 +1,4 @@
-// This is the entry point fuunction for Nakama Server
+// This is the entry point function for Nakama Server
 let InitModule: nkruntime.InitModule = function (
   // Context is said to be info about server like env variables (haven't grasped yet)
   ctx: nkruntime.Context,
@@ -6,8 +6,9 @@ let InitModule: nkruntime.InitModule = function (
   logger: nkruntime.Logger,
   // NK is responsible for being the middleware to call server-side functions
   nk: nkruntime.Nakama,
-  // Initializer is said to register PC's hook and callbacks (haven't grasped yet)
+  // Initializer is said to register RPCs hook and callbacks (haven't grasped yet)
   initializer: nkruntime.Initializer
 ) {
+  initializer.registerRpc("testRPC", testRPC);
   logger.info("Hello World!");
 };

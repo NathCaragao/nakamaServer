@@ -1,5 +1,5 @@
 {
-  "files": ["./src/main.ts"],
+  "files": ["./src/main.ts", "./src/testRPC.ts"],
   "compilerOptions": {
     "target": "es5",
     "esModuleInterop": true,
