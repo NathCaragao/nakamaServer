@@ -4,7 +4,7 @@ let createMatchRPC: nkruntime.RpcFunction = function (
   nk: nkruntime.Nakama,
   payload: string
 ): string {
-  logger.debug(payload);
+  logger.info("CREATING A MATCH!!!! : " + payload);
   var matchId = nk.matchCreate("testMatchHandler");
   return JSON.stringify({ matchId });
 };

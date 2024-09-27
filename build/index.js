@@ -18,14 +18,11 @@ initializer) {
         matchTerminate: matchTerminate1,
         matchSignal: matchSignal1,
     });
-    registerRPCs(initializer);
+    initializer.registerRpc("createMatchRPC", createMatchRPC);
     logger.info("Hello World!");
 };
-var registerRPCs = function (initializer) {
-    initializer.registerRpc("createMatchRPC", createMatchRPC);
-};
 var matchInit1 = function (ctx, logger, nk, params) {
-    logger.debug('Lobby match created');
+    logger.debug('Lobby match created   : ' + JSON.stringify(params));
     var presences = {};
     return {
         state: { presences: presences },
@@ -88,7 +85,7 @@ var matchSignal1 = function (ctx, logger, nk, dispatcher, tick, state, data) {
     };
 };
 var createMatchRPC = function (context, logger, nk, payload) {
-    logger.debug(payload);
+    logger.info("CREATING A MATCH!!!! : " + payload);
     var matchId = nk.matchCreate("testMatchHandler");
     return JSON.stringify({ matchId: matchId });
 };

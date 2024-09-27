@@ -1,5 +1,5 @@
 const matchInit1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, params: {[key: string]: string}): {state: nkruntime.MatchState, tickRate: number, label: string} {
-  logger.debug('Lobby match created');
+  logger.debug('Lobby match created   : ' + JSON.stringify(params));
 
   const presences: {[userId: string]: nkruntime.Presence} = {};
 
