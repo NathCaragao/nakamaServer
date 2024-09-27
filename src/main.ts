@@ -18,5 +18,12 @@ let InitModule: nkruntime.InitModule = function (
     matchTerminate: matchTerminate1,
     matchSignal: matchSignal1,
   });
+
+  registerRPCs(initializer);
+
   logger.info("Hello World!");
+};
+
+const registerRPCs = function (initializer: nkruntime.Initializer) {
+  initializer.registerRpc("createMatchRPC", createMatchRPC);
 };

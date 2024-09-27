@@ -1,4 +1,4 @@
-function rpcCreateMatch(
+function createMatchRPC(
   context: nkruntime.Context,
   logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
