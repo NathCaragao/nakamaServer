@@ -1,4 +1,4 @@
-function createMatchRPC(
+let createMatchRPC: nkruntime.RpcFunction = function (
   context: nkruntime.Context,
   logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
@@ -7,4 +7,4 @@ function createMatchRPC(
   logger.debug(payload);
   var matchId = nk.matchCreate("testMatchHandler");
   return JSON.stringify({ matchId });
-}
+};
