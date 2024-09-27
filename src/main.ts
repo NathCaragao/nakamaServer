@@ -9,6 +9,5 @@ let InitModule: nkruntime.InitModule = function (
   // Initializer is said to register RPCs hook and callbacks (haven't grasped yet)
   initializer: nkruntime.Initializer
 ) {
-  initializer.registerRpc("testRPC", testRPC);
   logger.info("Hello World!");
 };
