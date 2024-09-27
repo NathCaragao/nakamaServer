@@ -1,72 +1,80 @@
-const matchInit = function (
-  ctx: nkruntime.Context,
-  logger: nkruntime.Logger,
-  nk: nkruntime.Nakama,
-  params: { [key: string]: string }
-): { state: nkruntime.MatchState; tickRate: number; label: string } {
+const matchInit1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, params: {[key: string]: string}): {state: nkruntime.MatchState, tickRate: number, label: string} {
+  logger.debug('Lobby match created');
+
+  const presences: {[userId: string]: nkruntime.Presence} = {};
+
   return {
-    state: { presences: {}, emptyTicks: 0 },
-    tickRate: 1, // 1 tick per second = 1 MatchLoop func invocations per second
-    label: "",
+    state: { presences },
+    tickRate: 1,
+    label: ''
   };
 };
 
-const matchJoin = function (
-  ctx: nkruntime.Context,
-  logger: nkruntime.Logger,
-  nk: nkruntime.Nakama,
-  dispatcher: nkruntime.MatchDispatcher,
-  tick: number,
-  state: nkruntime.MatchState,
-  presences: nkruntime.Presence[]
-): { state: nkruntime.MatchState } | null {
-  presences.forEach(function (p) {
-    state.presences[p.sessionId] = p;
+const matchJoinAttempt1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, presence: nkruntime.Presence, metadata: {[key: string]: any }) : {state: nkruntime.MatchState, accept: boolean, rejectMessage?: string | undefined } | null {
+  logger.debug('%q attempted to join Lobby match', ctx.userId);
+
+  return {
+    state,
+    accept: true
+  };
+}
+
+const matchJoin1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, presences: nkruntime.Presence[]) : { state: nkruntime.MatchState } | null {
+  presences.forEach(function (presence) {
+    state.presences[presence.userId] = presence;
+    logger.debug('%q joined Lobby match', presence.userId);
   });
 
   return {
-    state,
+    state
   };
-};
+}
 
-const matchLeave = function (
-  ctx: nkruntime.Context,
-  logger: nkruntime.Logger,
-  nk: nkruntime.Nakama,
-  dispatcher: nkruntime.MatchDispatcher,
-  tick: number,
-  state: nkruntime.MatchState,
-  presences: nkruntime.Presence[]
-): { state: nkruntime.MatchState } | null {
-  presences.forEach(function (p) {
-    delete state.presences[p.sessionId];
+const matchLeave1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, presences: nkruntime.Presence[]) : { state: nkruntime.MatchState } | null {
+  presences.forEach(function (presence) {
+    delete (state.presences[presence.userId]);
+    logger.debug('%q left Lobby match', presence.userId);
   });
 
   return {
-    state,
+    state
   };
-};
+}
 
-const matchLoop = function (
-  ctx: nkruntime.Context,
-  logger: nkruntime.Logger,
-  nk: nkruntime.Nakama,
-  dispatcher: nkruntime.MatchDispatcher,
-  tick: number,
-  state: nkruntime.MatchState,
-  messages: nkruntime.MatchMessage[]
-): { state: nkruntime.MatchState } | null {
-  // If we have no presences in the match according to the match state, increment the empty ticks count
-  if (state.presences.length === 0) {
-    state.emptyTicks++;
-  }
+const matchLoop1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, messages: nkruntime.MatchMessage[]) : { state: nkruntime.MatchState} | null {
+  logger.debug('Lobby match loop executed');
 
-  // If the match has been empty for more than 100 ticks, end the match by returning null
-  if (state.emptyTicks > 100) {
-    return null;
-  }
+  Object.keys(state.presences).forEach(function (key) {
+    const presence = state.presences[key];
+    logger.info('Presence %v name $v', presence.userId, presence.username);
+  });
+
+  messages.forEach(function (message) {
+    logger.info('Received %v from %v', message.data, message.sender.userId);
+    dispatcher.broadcastMessage(1, message.data, [message.sender], null);
+  });
+
+  return {
+    state
+  };
+}
+
+const matchTerminate1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, graceSeconds: number) : { state: nkruntime.MatchState} | null {
+  logger.debug('Lobby match terminated');
+
+  const message = `Server shutting down in ${graceSeconds} seconds.`;
+  dispatcher.broadcastMessage(2, message, null, null);
+
+  return {
+    state
+  };
+}
+
+const matchSignal1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, data: string) : { state: nkruntime.MatchState, data?: string } | null {
+  logger.debug('Lobby match signal received: ' + data);
 
   return {
     state,
+    data: "Lobby match signal received: " + data
   };
-};
+}

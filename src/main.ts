@@ -9,5 +9,14 @@ let InitModule: nkruntime.InitModule = function (
   // Initializer is said to register RPCs hook and callbacks (haven't grasped yet)
   initializer: nkruntime.Initializer
 ) {
+  initializer.registerMatch("testMatchHandler", {
+    matchInit: matchInit1,
+    matchJoinAttempt: matchJoinAttempt1,
+    matchJoin: matchJoin1,
+    matchLoop: matchLoop1,
+    matchLeave: matchLeave1,
+    matchTerminate: matchTerminate1,
+    matchSignal: matchSignal1,
+  });
   logger.info("Hello World!");
 };
