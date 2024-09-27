@@ -9,33 +9,41 @@ logger,
 nk, 
 // Initializer is said to register RPCs hook and callbacks (haven't grasped yet)
 initializer) {
-    initializer.registerRpc("testRPC", testRPC);
     logger.info("Hello World!");
 };
-// RPCs are needed to be registered in main.ts InitModule
-// then compiled again using npx tsc
-// let testRPC: nkruntime.RpcFunction = function (
-//     // RPCs need the server context
-//     ctx: nkruntime.Context,
-//     // RPCs need to use the same server logger
-//     logger: nkruntime.Logger,
-//     // RPCs need the same NK since it will receive this RPC's request for it
-//     nk: nkruntime.Nakama,
-//     // Payload is the in String format, but is typically made from JSON
-//     payload: string
-// ) {
-//     logger.info("testRPC called");
-//     return JSON.stringify({success: true});
-// }
-function testRPC(
-// RPCs need the server context
-ctx, 
-// RPCs need to use the same server logger
-logger, 
-// RPCs need the same NK since it will receive this RPC's request for it
-nk, 
-// Payload is the in String format, but is typically made from JSON
-payload) {
-    logger.info("testRPC called");
-    return JSON.stringify({ success: true });
-}
+var matchInit = function (ctx, logger, nk, params) {
+    return {
+        state: { presences: {}, emptyTicks: 0 },
+        tickRate: 1, // 1 tick per second = 1 MatchLoop func invocations per second
+        label: "",
+    };
+};
+var matchJoin = function (ctx, logger, nk, dispatcher, tick, state, presences) {
+    presences.forEach(function (p) {
+        state.presences[p.sessionId] = p;
+    });
+    return {
+        state: state,
+    };
+};
+var matchLeave = function (ctx, logger, nk, dispatcher, tick, state, presences) {
+    presences.forEach(function (p) {
+        delete state.presences[p.sessionId];
+    });
+    return {
+        state: state,
+    };
+};
+var matchLoop = function (ctx, logger, nk, dispatcher, tick, state, messages) {
+    // If we have no presences in the match according to the match state, increment the empty ticks count
+    if (state.presences.length === 0) {
+        state.emptyTicks++;
+    }
+    // If the match has been empty for more than 100 ticks, end the match by returning null
+    if (state.emptyTicks > 100) {
+        return null;
+    }
+    return {
+        state: state,
+    };
+};
