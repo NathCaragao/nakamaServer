@@ -87,8 +87,8 @@ var matchSignal1 = function (ctx, logger, nk, dispatcher, tick, state, data) {
         data: "Lobby match signal received: " + data
     };
 };
-function createMatchRPC(context, logger, nk, payload) {
+var createMatchRPC = function (context, logger, nk, payload) {
     logger.debug(payload);
     var matchId = nk.matchCreate("testMatchHandler");
     return JSON.stringify({ matchId: matchId });
-}
+};
