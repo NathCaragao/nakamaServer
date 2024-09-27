@@ -1,5 +1,5 @@
 {
-  "files": ["./src/main.ts", "./src/testRPC.ts"],
+  "files": ["./src/main.ts", "./src/multiplayerMatchHandler.ts"],
   "compilerOptions": {
     "target": "es5",
     "esModuleInterop": true,
