@@ -55,6 +55,7 @@ var matchLeave1 = function (ctx, logger, nk, dispatcher, tick, state, presences)
         state: state
     };
 };
+// This is where messages received are processed.
 var matchLoop1 = function (ctx, logger, nk, dispatcher, tick, state, messages) {
     logger.debug('Lobby match loop executed');
     Object.keys(state.presences).forEach(function (key) {
@@ -65,6 +66,8 @@ var matchLoop1 = function (ctx, logger, nk, dispatcher, tick, state, messages) {
         logger.info('Received %v from %v', message.data, message.sender.userId);
         dispatcher.broadcastMessage(1, message.data, [message.sender], null);
     });
+    // test broadcasting of message every tick
+    dispatcher.broadcastMessage(1, "SUCK A NEEGA DIGG", null, null, true);
     return {
         state: state
     };

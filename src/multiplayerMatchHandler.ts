@@ -41,6 +41,7 @@ const matchLeave1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, 
   };
 }
 
+// This is where messages received are processed.
 const matchLoop1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: nkruntime.MatchState, messages: nkruntime.MatchMessage[]) : { state: nkruntime.MatchState} | null {
   logger.debug('Lobby match loop executed');
 
@@ -54,6 +55,8 @@ const matchLoop1 = function (ctx: nkruntime.Context, logger: nkruntime.Logger, n
     dispatcher.broadcastMessage(1, message.data, [message.sender], null);
   });
 
+  // test broadcasting of message every tick
+  dispatcher.broadcastMessage(1, "SUCK A NEEGA DIGG", null, null, true);
   return {
     state
   };
