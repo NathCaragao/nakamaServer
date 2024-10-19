@@ -19,72 +19,71 @@ initializer) {
         matchSignal: matchSignal1,
     });
     initializer.registerRpc("createMatchRPC", createMatchRPC);
-    logger.info("Hello World!");
 };
 var matchInit1 = function (ctx, logger, nk, params) {
-    logger.debug('Lobby match created   : ' + JSON.stringify(params));
+    logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
     var presences = {};
     return {
         state: { presences: presences },
-        tickRate: 1,
-        label: ''
+        tickRate: 10,
+        label: "",
     };
 };
 var matchJoinAttempt1 = function (ctx, logger, nk, dispatcher, tick, state, presence, metadata) {
-    logger.debug('%q attempted to join Lobby match', ctx.userId);
+    logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
+    var currentNumberOfPlayersInMatch = Object.keys(state.presences).length;
     return {
         state: state,
-        accept: true
+        accept: currentNumberOfPlayersInMatch <= 3,
     };
 };
 var matchJoin1 = function (ctx, logger, nk, dispatcher, tick, state, presences) {
     presences.forEach(function (presence) {
-        state.presences[presence.userId] = presence;
-        logger.debug('%q joined Lobby match', presence.userId);
+        state.presences[presence.userId] = {
+            playerInfo: presence,
+            message: "",
+            isLobbyReady: false,
+        };
+        logger.debug("%q JOINED MATCH", presence.userId);
     });
     return {
-        state: state
+        state: state,
     };
 };
 var matchLeave1 = function (ctx, logger, nk, dispatcher, tick, state, presences) {
     presences.forEach(function (presence) {
-        delete (state.presences[presence.userId]);
-        logger.debug('%q left Lobby match', presence.userId);
+        delete state.presences[presence.userId];
+        logger.debug("%q LEFT MATCH", presence.userId);
     });
     return {
-        state: state
+        state: state,
     };
 };
-// This is where messages received are processed.
 var matchLoop1 = function (ctx, logger, nk, dispatcher, tick, state, messages) {
-    logger.debug('Lobby match loop executed');
-    Object.keys(state.presences).forEach(function (key) {
-        var presence = state.presences[key];
-        logger.info('Presence %v name $v', presence.userId, presence.username);
-    });
+    logger.debug("MATCH LOOP");
+    // Object.keys(state.presences).forEach(function (key) {
+    //   const presence = state.presences[key];
+    //   logger.info("Presence %v name $v", presence.userId, presence.username);
+    // });
     messages.forEach(function (message) {
-        logger.info('Received %v from %v', message.data, message.sender.userId);
-        dispatcher.broadcastMessage(1, message.data, [message.sender], null);
+        logger.info("Received ".concat(message.data, " from ").concat(message.sender.userId));
+        dispatcher.broadcastMessage(1, message.data);
     });
-    // test broadcasting of message every tick
-    dispatcher.broadcastMessage(1, "SUCK A NEEGA DIGG", null, null, true);
     return {
-        state: state
+        state: state,
     };
 };
 var matchTerminate1 = function (ctx, logger, nk, dispatcher, tick, state, graceSeconds) {
-    logger.debug('Lobby match terminated');
-    var message = "Server shutting down in ".concat(graceSeconds, " seconds.");
-    dispatcher.broadcastMessage(2, message, null, null);
+    logger.debug("MATCH TERMINATING");
     return {
-        state: state
+        state: state,
     };
 };
 var matchSignal1 = function (ctx, logger, nk, dispatcher, tick, state, data) {
-    logger.debug('Lobby match signal received: ' + data);
+    logger.debug("Lobby match signal received: " + data);
     return {
         state: state,
-        data: "Lobby match signal received: " + data
+        data: "Lobby match signal received: " + data,
     };
 };
 var createMatchRPC = function (context, logger, nk, payload) {

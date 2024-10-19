@@ -106,7 +106,7 @@ const matchLoop1 = function (
   // });
 
   messages.forEach(function (message) {
-    logger.info("Received %v from %v", message.data, message.sender.userId);
+    logger.info(`RECEIVED A MESSAGE: ${message.data}`);
     dispatcher.broadcastMessage(1, message.data);
   });
 
