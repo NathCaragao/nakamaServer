@@ -1,30 +1,26 @@
-// These comments will keep track of "state" variable and its properties AFTER functions' execution
+type PlayerData = {
+  playerInfo: nkruntime.Presence;
+  message: String;
+  isLobbyReady: boolean;
+};
 
-// NOTE: IT IS A GOOD IDEA TO RENAME THESE ARGS FOR BETTER CLARITY - like presences and state.presences
-
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * but empty
-// }
 const matchInit1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
   params: { [key: string]: string }
 ): { state: nkruntime.MatchState; tickRate: number; label: string } {
-  logger.debug("Lobby match created   : " + JSON.stringify(params));
+  logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
 
-  const presences: { [userId: string]: nkruntime.Presence } = {};
+  const presences: { [userId: string]: PlayerData } = {};
 
   return {
     state: { presences },
-    tickRate: 1,
+    tickRate: 10,
     label: "",
   };
 };
 
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * but empty
-// }
 const matchJoinAttempt1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -39,18 +35,18 @@ const matchJoinAttempt1 = function (
   accept: boolean;
   rejectMessage?: string | undefined;
 } | null {
-  logger.debug("%q attempted to join Lobby match", ctx.userId);
+  logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
+
+  let currentNumberOfPlayersInMatch: number = Object.keys(
+    state.presences
+  ).length;
 
   return {
     state,
-    accept: true,
+    accept: currentNumberOfPlayersInMatch <= 3,
   };
 };
 
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * but now populated
-//             : { "thisIsAUserId" : <nkruntime.Presence> object } * example
-// }
 const matchJoin1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -61,8 +57,12 @@ const matchJoin1 = function (
   presences: nkruntime.Presence[]
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
-    state.presences[presence.userId] = presence;
-    logger.debug("%q joined Lobby match", presence.userId);
+    state.presences[presence.userId] = {
+      playerInfo: presence,
+      message: "",
+      isLobbyReady: false,
+    };
+    logger.debug("%q JOINED MATCH", presence.userId);
   });
 
   return {
@@ -70,9 +70,6 @@ const matchJoin1 = function (
   };
 };
 
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * but will delete all state.presences from presences arg
-// }
 const matchLeave1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -84,7 +81,7 @@ const matchLeave1 = function (
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
     delete state.presences[presence.userId];
-    logger.debug("%q left Lobby match", presence.userId);
+    logger.debug("%q LEFT MATCH", presence.userId);
   });
 
   return {
@@ -92,10 +89,6 @@ const matchLeave1 = function (
   };
 };
 
-// This is also where messages received are processed.
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * NOT MODIFIED
-// }
 const matchLoop1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -105,28 +98,23 @@ const matchLoop1 = function (
   state: nkruntime.MatchState,
   messages: nkruntime.MatchMessage[]
 ): { state: nkruntime.MatchState } | null {
-  logger.debug("Lobby match loop executed");
+  logger.debug("MATCH LOOP");
 
-  Object.keys(state.presences).forEach(function (key) {
-    const presence = state.presences[key];
-    logger.info("Presence %v name $v", presence.userId, presence.username);
-  });
+  // Object.keys(state.presences).forEach(function (key) {
+  //   const presence = state.presences[key];
+  //   logger.info("Presence %v name $v", presence.userId, presence.username);
+  // });
 
   messages.forEach(function (message) {
     logger.info("Received %v from %v", message.data, message.sender.userId);
-    dispatcher.broadcastMessage(1, message.data, [message.sender], null);
+    dispatcher.broadcastMessage(1, message.data);
   });
 
-  // test broadcasting of message every tick
-  dispatcher.broadcastMessage(1, "SUCK A NEEGA DIGG", null, null, true);
   return {
     state,
   };
 };
 
-// state: {
-//    presences: { <userId>:String : <PresenceInfos>:nakamaPresence } * the room is most likely going to be cleared.
-// }
 const matchTerminate1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -136,10 +124,7 @@ const matchTerminate1 = function (
   state: nkruntime.MatchState,
   graceSeconds: number
 ): { state: nkruntime.MatchState } | null {
-  logger.debug("Lobby match terminated");
-
-  const message = `Server shutting down in ${graceSeconds} seconds.`;
-  dispatcher.broadcastMessage(2, message, null, null);
+  logger.debug("MATCH TERMINATING");
 
   return {
     state,
