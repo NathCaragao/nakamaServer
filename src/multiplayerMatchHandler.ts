@@ -101,11 +101,7 @@ const matchLoop1 = function (
   logger.debug("MATCH LOOP");
 
   messages.forEach(function (message) {
-    const textDecoder = new TextDecoder("utf-8");
-    const decodedData = textDecoder.decode(message.data);
-    const jsonData = JSON.parse(decodedData);
-
-    logger.info(`RECEIVED A MESSAGE: ${jsonData}`);
+    logger.info(`RECEIVED A MESSAGE: ${message.data}`);
     dispatcher.broadcastMessage(1, message.data);
   });
 
