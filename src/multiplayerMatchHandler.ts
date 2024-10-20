@@ -100,13 +100,12 @@ const matchLoop1 = function (
 ): { state: nkruntime.MatchState } | null {
   logger.debug("MATCH LOOP");
 
-  // Object.keys(state.presences).forEach(function (key) {
-  //   const presence = state.presences[key];
-  //   logger.info("Presence %v name $v", presence.userId, presence.username);
-  // });
-
   messages.forEach(function (message) {
-    logger.info(`RECEIVED A MESSAGE: ${message.data}`);
+    const textDecoder = new TextDecoder("utf-8");
+    const decodedData = textDecoder.decode(message.data);
+    const jsonData = JSON.parse(decodedData);
+
+    logger.info(`RECEIVED A MESSAGE: ${jsonData}`);
     dispatcher.broadcastMessage(1, message.data);
   });
 
