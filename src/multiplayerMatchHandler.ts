@@ -101,7 +101,9 @@ const matchLoop1 = function (
   logger.debug("MATCH LOOP");
 
   messages.forEach(function (message) {
-    logger.info(`RECEIVED A MESSAGE: ${message.data}`);
+    const stringFromMessage = arrayBufferToString(message.data);
+    const jsonMessage = JSON.parse(stringFromMessage);
+    logger.info(`RECEIVED A MESSAGE: ${stringFromMessage}`);
     dispatcher.broadcastMessage(1, message.data);
   });
 
@@ -109,6 +111,15 @@ const matchLoop1 = function (
     state,
   };
 };
+
+function arrayBufferToString(buffer: ArrayBuffer): string {
+  let result = "";
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.length; i++) {
+      result += String.fromCharCode(bytes[i]);
+  }
+  return result;
+}
 
 const matchTerminate1 = function (
   ctx: nkruntime.Context,
