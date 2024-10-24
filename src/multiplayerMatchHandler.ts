@@ -1,7 +1,7 @@
 type PlayerMultiplayerData = {
   playerInfo: nkruntime.Presence; // These are Nakama-defined user info.
   // Lobby Match Player info
-  isLobbyReady: boolean;
+  isReady: boolean;
   // Ongoing Match Player info
   message: String;
 };
@@ -66,7 +66,7 @@ const matchJoin1 = function (
     state.presences[presence.userId] = {
       playerInfo: presence,
       message: "",
-      isLobbyReady: false,
+      isReady: false,
     };
     logger.debug("%q JOINED MATCH", presence.userId);
   });
@@ -105,6 +105,7 @@ const matchLoop1 = function (
   messages: nkruntime.MatchMessage[]
 ): { state: nkruntime.MatchState } | null {
   logger.debug("MATCH LOOP");
+  dispatcher.broadcastMessage(99, JSON.stringify(state));
 
   messages.forEach(function (message) {
     const stringFromMessage = arrayBufferToString(message.data);
