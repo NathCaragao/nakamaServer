@@ -20,6 +20,10 @@ initializer) {
     });
     initializer.registerRpc("createMatchRPC", createMatchRPC);
 };
+var MessageOpCode;
+(function (MessageOpCode) {
+    MessageOpCode[MessageOpCode["LOBBY_READY_UPDATE"] = 1] = "LOBBY_READY_UPDATE";
+})(MessageOpCode || (MessageOpCode = {}));
 var matchInit1 = function (ctx, logger, nk, params) {
     logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
     var presences = {};
@@ -42,7 +46,7 @@ var matchJoin1 = function (ctx, logger, nk, dispatcher, tick, state, presences) 
         state.presences[presence.userId] = {
             playerInfo: presence,
             message: "",
-            isLobbyReady: false,
+            isReady: false,
         };
         logger.debug("%q JOINED MATCH", presence.userId);
     });
@@ -61,18 +65,27 @@ var matchLeave1 = function (ctx, logger, nk, dispatcher, tick, state, presences)
 };
 var matchLoop1 = function (ctx, logger, nk, dispatcher, tick, state, messages) {
     logger.debug("MATCH LOOP");
-    // Object.keys(state.presences).forEach(function (key) {
-    //   const presence = state.presences[key];
-    //   logger.info("Presence %v name $v", presence.userId, presence.username);
-    // });
+    dispatcher.broadcastMessage(99, JSON.stringify(state));
     messages.forEach(function (message) {
-        logger.info("Received ".concat(message.data, " from ").concat(message.sender.userId));
-        dispatcher.broadcastMessage(1, message.data);
+        var stringFromMessage = arrayBufferToString(message.data);
+        var jsonMessage = JSON.parse(stringFromMessage);
+        if (message.opCode == MessageOpCode.LOBBY_READY_UPDATE) {
+            logger.debug("RECEIVED MESSAGE FROM: ".concat(jsonMessage.userID, ", with MESSAGE: ").concat(jsonMessage.isReady));
+        }
+        // dispatcher.broadcastMessage(1, message.data);
     });
     return {
         state: state,
     };
 };
+function arrayBufferToString(buffer) {
+    var result = "";
+    var bytes = new Uint8Array(buffer);
+    for (var i = 0; i < bytes.length; i++) {
+        result += String.fromCharCode(bytes[i]);
+    }
+    return result;
+}
 var matchTerminate1 = function (ctx, logger, nk, dispatcher, tick, state, graceSeconds) {
     logger.debug("MATCH TERMINATING");
     return {
