@@ -1,8 +1,14 @@
-type PlayerData = {
-  playerInfo: nkruntime.Presence;
-  message: String;
+type PlayerMultiplayerData = {
+  playerInfo: nkruntime.Presence; // These are Nakama-defined user info.
+  // Lobby Match Player info
   isLobbyReady: boolean;
+  // Ongoing Match Player info
+  message: String;
 };
+
+enum MessageOpCode {
+  LOBBY_READY_UPDATE = 1,
+}
 
 const matchInit1 = function (
   ctx: nkruntime.Context,
@@ -12,7 +18,7 @@ const matchInit1 = function (
 ): { state: nkruntime.MatchState; tickRate: number; label: string } {
   logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
 
-  const presences: { [userId: string]: PlayerData } = {};
+  const presences: { [userId: string]: PlayerMultiplayerData } = {};
 
   return {
     state: { presences },
@@ -103,8 +109,13 @@ const matchLoop1 = function (
   messages.forEach(function (message) {
     const stringFromMessage = arrayBufferToString(message.data);
     const jsonMessage = JSON.parse(stringFromMessage);
-    logger.info(`RECEIVED A MESSAGE: ${jsonMessage.testKey}`);
-    dispatcher.broadcastMessage(1, message.data);
+
+    if (message.opCode == MessageOpCode.LOBBY_READY_UPDATE) {
+      logger.debug(
+        `RECEIVED MESSAGE FROM: ${jsonMessage.userID}, with MESSAGE: ${jsonMessage.isReady}`
+      );
+    }
+    // dispatcher.broadcastMessage(1, message.data);
   });
 
   return {
