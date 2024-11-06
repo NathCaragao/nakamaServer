@@ -41,7 +41,7 @@ const matchInit1 = function (
   var currentMatchStatus: MatchStatus = MatchStatus.LOBBY;
 
   return {
-    state: { presences, currentMatchStatus },
+    state: { presences, currentMatchStatus, emptyTicks: 0 },
     tickRate: 10,
     label: "",
   };
@@ -165,7 +165,12 @@ const matchLoop1 = function (
   );
 
   if (getNumberOfPlayers(state.presences) == 0) {
-    return null;
+    state.emptyTicks++;
+    if(state.emptyTicks == 150) {
+      return null;
+    }
+  } else {
+    state.emptyTicks = 0;
   }
 
   return {
