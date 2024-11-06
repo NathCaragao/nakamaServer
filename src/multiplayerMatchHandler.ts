@@ -143,6 +143,9 @@ const matchLoop1 = function (
 
     if (message.opCode == MessageOpCode.UPDATE_HOST) {
       state.presences[dataJson.userId].isHost = dataJson.payload.isHost;
+    } else if (message.opCode == MessageOpCode.UPDATE_DISPLAY_NAME) {
+      state.presences[dataJson.userId].playerData.displayName =
+        dataJson.payload.displayName;
     }
 
     // if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
