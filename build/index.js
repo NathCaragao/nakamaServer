@@ -22,31 +22,53 @@ initializer) {
 };
 var MessageOpCode;
 (function (MessageOpCode) {
-    MessageOpCode[MessageOpCode["LOBBY_READY_UPDATE"] = 1] = "LOBBY_READY_UPDATE";
+    MessageOpCode[MessageOpCode["DATA_FROM_SERVER"] = 1] = "DATA_FROM_SERVER";
+    MessageOpCode[MessageOpCode["UPDATE_DISPLAY_NAME"] = 2] = "UPDATE_DISPLAY_NAME";
+    MessageOpCode[MessageOpCode["UPDATE_HOST"] = 3] = "UPDATE_HOST";
+    MessageOpCode[MessageOpCode["LOBBY_PLAYER_READY_CHANGED"] = 4] = "LOBBY_PLAYER_READY_CHANGED";
+    MessageOpCode[MessageOpCode["ONGOING_PLAYER_STARTED_CHANGED"] = 5] = "ONGOING_PLAYER_STARTED_CHANGED";
 })(MessageOpCode || (MessageOpCode = {}));
+var MatchStatus;
+(function (MatchStatus) {
+    MatchStatus[MatchStatus["LOBBY"] = 1] = "LOBBY";
+    MatchStatus[MatchStatus["ONGOING"] = 2] = "ONGOING";
+})(MatchStatus || (MatchStatus = {}));
+var getNumberOfPlayers = function (playersList) {
+    return Object.keys(playersList).length;
+};
 var matchInit1 = function (ctx, logger, nk, params) {
-    logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
+    // logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
     var presences = {};
+    var currentMatchStatus = MatchStatus.LOBBY;
     return {
-        state: { presences: presences },
+        state: { presences: presences, currentMatchStatus: currentMatchStatus },
         tickRate: 10,
         label: "",
     };
 };
 var matchJoinAttempt1 = function (ctx, logger, nk, dispatcher, tick, state, presence, metadata) {
-    logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
-    var currentNumberOfPlayersInMatch = Object.keys(state.presences).length;
+    // logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
+    // let currentNumberOfPlayersInMatch: number = Object.keys(
+    //   state.presences
+    // ).length;
+    var currentNumberOfPlayersInMatch = getNumberOfPlayers(state.presences);
     return {
         state: state,
-        accept: currentNumberOfPlayersInMatch <= 3,
+        accept: currentNumberOfPlayersInMatch < 3 &&
+            state.currentMatchStatus != MatchStatus.ONGOING,
     };
 };
 var matchJoin1 = function (ctx, logger, nk, dispatcher, tick, state, presences) {
     presences.forEach(function (presence) {
         state.presences[presence.userId] = {
-            playerInfo: presence,
-            message: "",
+            isHost: false,
+            playerData: {
+                nakamaData: presence,
+                displayName: "",
+            },
             isReady: false,
+            isStarted: false,
+            ongoingMatchData: {},
         };
         logger.debug("%q JOINED MATCH", presence.userId);
     });
@@ -64,16 +86,33 @@ var matchLeave1 = function (ctx, logger, nk, dispatcher, tick, state, presences)
     };
 };
 var matchLoop1 = function (ctx, logger, nk, dispatcher, tick, state, messages) {
-    logger.debug("MATCH LOOP");
-    dispatcher.broadcastMessage(99, JSON.stringify(state));
+    // logger.debug("MATCH LOOP");
+    // Process messages from clients
     messages.forEach(function (message) {
-        var stringFromMessage = arrayBufferToString(message.data);
-        var jsonMessage = JSON.parse(stringFromMessage);
-        if (message.opCode == MessageOpCode.LOBBY_READY_UPDATE) {
-            logger.debug("RECEIVED MESSAGE FROM: ".concat(jsonMessage.userID, ", with MESSAGE: ").concat(jsonMessage.isReady));
+        var dataString = arrayBufferToString(message.data);
+        var dataJson = JSON.parse(dataString);
+        if (message.opCode == MessageOpCode.UPDATE_HOST) {
+            state.presences[dataJson.userId].isHost = dataJson.payload.isHost;
         }
+        else if (message.opCode == MessageOpCode.UPDATE_DISPLAY_NAME) {
+            state.presences[dataJson.userId].playerData.displayName =
+                dataJson.payload.displayName;
+        }
+        else if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
+            state.presences[dataJson.userId].isReady = dataJson.payload.isReady;
+        }
+        // if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
+        //   logger.debug(
+        //     `RECEIVED MESSAGE FROM: ${jsonMessage.userID}, with MESSAGE: ${jsonMessage.isReady}`
+        //   );
+        // }
         // dispatcher.broadcastMessage(1, message.data);
     });
+    // Broadcast message to every client
+    dispatcher.broadcastMessage(MessageOpCode.DATA_FROM_SERVER, JSON.stringify(state));
+    if (getNumberOfPlayers(state.presences) == 0) {
+        return null;
+    }
     return {
         state: state,
     };
