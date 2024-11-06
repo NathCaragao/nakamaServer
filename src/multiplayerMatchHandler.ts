@@ -147,8 +147,7 @@ const matchLoop1 = function (
       state.presences[dataJson.userId].playerData.displayName =
         dataJson.payload.displayName;
     } else if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
-      state.presences[dataJson.userId].playerData.isReady =
-        dataJson.payload.isReady;
+      state.presences[dataJson.userId].isReady = dataJson.payload.isReady;
     }
 
     // if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
