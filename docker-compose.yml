@@ -24,7 +24,7 @@ services:
       - "-ecx"
       - >
         /nakama/nakama migrate up --database.address postgres:localdb@postgres:5432/nakama &&
-        exec /nakama/nakama --name thesisServer --config /nakama/data/local.yml --socket.server_key "thesisServer" --database.address postgres:localdb@postgres:5432/nakama        
+        exec /nakama/nakama --name TheousKai --config /nakama/data/local.yml --socket.server_key "TheousKai" --database.address postgres:localdb@postgres:5432/nakama        
     expose:
       - "7349"
       - "7350"

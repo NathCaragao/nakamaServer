@@ -166,7 +166,7 @@ const matchLoop1 = function (
 
   if (getNumberOfPlayers(state.presences) == 0) {
     state.emptyTicks++;
-    if(state.emptyTicks == 150) {
+    if (state.emptyTicks == 150) {
       return null;
     }
   } else {
