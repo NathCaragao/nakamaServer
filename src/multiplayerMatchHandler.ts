@@ -83,7 +83,8 @@ const matchJoin1 = function (
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
     state.presences[presence.userId] = {
-      isHost: false,
+      // This is only true for reasons
+      isHost: true,
 
       playerData: {
         nakamaData: presence,
@@ -132,7 +133,10 @@ const matchLoop1 = function (
   messages: nkruntime.MatchMessage[]
 ): { state: nkruntime.MatchState } | null {
   // Check if host is still in match
-  if (getNumberOfPlayers(state.presences) >= 1 && ctx.matchTickRate > 150) {
+  // MIGHT BE BETTER MOVED TO MATCH_LEAVE() AND ADD A BROADCAST WHEN THE HOST LEAVES
+  // SO THAT CLIENT CAN HANDLE IT AND TERMINATE THE MATCH THEN MOVE TO NO_MATCH_GUI
+  logger.debug(`tickRate: ${ctx.matchTickRate}`);
+  if (getNumberOfPlayers(state.presences) >= 1) {
     var isHostPresent = false;
     Object.keys(state.presences).forEach(function (presenceId) {
       if (state.presences[presenceId].isHost == true) {
@@ -140,6 +144,7 @@ const matchLoop1 = function (
       }
     });
     if (isHostPresent == false) return null;
+    logger.debug(`Is host still here? ${isHostPresent}`);
   }
 
   // Process messages from clients
