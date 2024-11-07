@@ -62,10 +62,6 @@ const matchJoinAttempt1 = function (
   rejectMessage?: string | undefined;
 } | null {
   // logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
-
-  // let currentNumberOfPlayersInMatch: number = Object.keys(
-  //   state.presences
-  // ).length;
   let currentNumberOfPlayersInMatch = getNumberOfPlayers(state.presences);
 
   return {
@@ -135,7 +131,17 @@ const matchLoop1 = function (
   state: nkruntime.MatchState,
   messages: nkruntime.MatchMessage[]
 ): { state: nkruntime.MatchState } | null {
-  // logger.debug("MATCH LOOP");
+  // Check if host is still in match
+  if (getNumberOfPlayers(state.presences) >= 1 && ctx.matchTickRate > 150) {
+    var isHostPresent = false;
+    Object.keys(state.presences).forEach(function (presenceId) {
+      if (state.presences[presenceId].isHost == true) {
+        isHostPresent = true;
+      }
+    });
+    if (isHostPresent == false) return null;
+  }
+
   // Process messages from clients
   messages.forEach(function (message) {
     const dataString = arrayBufferToString(message.data);
