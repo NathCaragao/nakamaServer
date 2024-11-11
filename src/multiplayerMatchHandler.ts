@@ -159,8 +159,9 @@ const matchLoop1 = function (
         dataJson.payload.displayName;
     } else if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
       state.presences[dataJson.userId].isReady = dataJson.payload.isReady;
+    } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_STARTED_CHANGED) {
+      state.presences[dataJson.userId].isStarted = dataJson.payload.isStarted;
     }
-
     // if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
     //   logger.debug(
     //     `RECEIVED MESSAGE FROM: ${jsonMessage.userID}, with MESSAGE: ${jsonMessage.isReady}`
