@@ -35,8 +35,6 @@ const matchInit1 = function (
   nk: nkruntime.Nakama,
   params: { [key: string]: string }
 ): { state: nkruntime.MatchState; tickRate: number; label: string } {
-  // logger.debug("MATCH CREATED WITH PARAMS: " + JSON.stringify(params));
-
   const presences: { [userId: string]: PlayerMultiplayerData } = {};
   var currentMatchStatus: MatchStatus = MatchStatus.LOBBY;
 
@@ -61,7 +59,6 @@ const matchJoinAttempt1 = function (
   accept: boolean;
   rejectMessage?: string | undefined;
 } | null {
-  // logger.debug("%q ATTEMPTS TO JOIN MATCH", ctx.userId);
   let currentNumberOfPlayersInMatch = getNumberOfPlayers(state.presences);
 
   return {
@@ -135,7 +132,6 @@ const matchLoop1 = function (
   // Check if host is still in match
   // MIGHT BE BETTER MOVED TO MATCH_LEAVE() AND ADD A BROADCAST WHEN THE HOST LEAVES
   // SO THAT CLIENT CAN HANDLE IT AND TERMINATE THE MATCH THEN MOVE TO NO_MATCH_GUI
-  logger.debug(`tickRate: ${ctx.matchTickRate}`);
   if (getNumberOfPlayers(state.presences) >= 1) {
     var isHostPresent = false;
     Object.keys(state.presences).forEach(function (presenceId) {
@@ -144,7 +140,6 @@ const matchLoop1 = function (
       }
     });
     if (isHostPresent == false) return null;
-    logger.debug(`Is host still here? ${isHostPresent}`);
   }
 
   // Process messages from clients
@@ -162,12 +157,6 @@ const matchLoop1 = function (
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_STARTED_CHANGED) {
       state.presences[dataJson.userId].isStarted = dataJson.payload.isStarted;
     }
-    // if (message.opCode == MessageOpCode.LOBBY_PLAYER_READY_CHANGED) {
-    //   logger.debug(
-    //     `RECEIVED MESSAGE FROM: ${jsonMessage.userID}, with MESSAGE: ${jsonMessage.isReady}`
-    //   );
-    // }
-    // dispatcher.broadcastMessage(1, message.data);
   });
 
   // Broadcast message to every client
