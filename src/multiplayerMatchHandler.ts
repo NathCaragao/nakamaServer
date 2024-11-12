@@ -9,7 +9,9 @@ type PlayerMultiplayerData = {
   isReady: boolean;
 
   isStarted: boolean;
-  ongoingMatchData: {};
+  ongoingMatchData: {
+    direction: any;
+  };
 };
 
 enum MessageOpCode {
@@ -18,6 +20,7 @@ enum MessageOpCode {
   UPDATE_HOST,
   LOBBY_PLAYER_READY_CHANGED,
   ONGOING_PLAYER_STARTED_CHANGED,
+  ONGOING_PLAYER_DATA_UPDATE,
 }
 
 enum MatchStatus {
@@ -156,6 +159,12 @@ const matchLoop1 = function (
       state.presences[dataJson.userId].isReady = dataJson.payload.isReady;
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_STARTED_CHANGED) {
       state.presences[dataJson.userId].isStarted = dataJson.payload.isStarted;
+    } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_DATA_UPDATE) {
+      state.presences[dataJson.userId].ongoingMatchData.direction =
+        dataJson.payload.ongoingMatchData.direction;
+      if (dataJson.payload.ongoingMatchData.direction != 0) {
+        logger.debug(dataJson.payload.ongoingMatchData.direction.toString());
+      }
     }
   });
 
