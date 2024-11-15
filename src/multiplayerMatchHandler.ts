@@ -94,7 +94,9 @@ const matchJoin1 = function (
       isReady: false,
 
       isStarted: false,
-      ongoingMatchData: {},
+      ongoingMatchData: {
+        direction: 0,
+      },
     };
     logger.debug("%q JOINED MATCH", presence.userId);
   });
@@ -162,9 +164,6 @@ const matchLoop1 = function (
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_DATA_UPDATE) {
       state.presences[dataJson.userId].ongoingMatchData.direction =
         dataJson.payload.ongoingMatchData.direction;
-      if (dataJson.payload.ongoingMatchData.direction != 0) {
-        logger.debug(dataJson.payload.ongoingMatchData.direction.toString());
-      }
     }
   });
 
