@@ -43,7 +43,7 @@ const matchInit1 = function (
 
   return {
     state: { presences, currentMatchStatus, emptyTicks: 0 },
-    tickRate: 10,
+    tickRate: 20,
     label: "",
   };
 };
