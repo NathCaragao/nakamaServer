@@ -16,6 +16,7 @@ type PlayerMultiplayerData = {
     isSkill: boolean;
     velocity: any;
     weaponMode: any;
+    position: any;
   };
 };
 
@@ -106,6 +107,7 @@ const matchJoin1 = function (
         isSkill: false,
         velocity: "(0, 0)",
         weaponMode: "Melee",
+        position: "(0, 0)",
       },
     };
     logger.debug("%q JOINED MATCH", presence.userId);
@@ -189,6 +191,9 @@ const matchLoop1 = function (
 
       state.presences[dataJson.userId].ongoingMatchData.weaponMode =
         dataJson.payload.ongoingMatchData.weaponMode;
+
+      state.presences[dataJson.userId].ongoingMatchData.position =
+        dataJson.payload.ongoingMatchData.position.toString();
     }
   });
 
