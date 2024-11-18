@@ -11,6 +11,11 @@ type PlayerMultiplayerData = {
   isStarted: boolean;
   ongoingMatchData: {
     direction: any;
+    isJumping: boolean;
+    isAttacking: boolean;
+    isSkill: boolean;
+    velocity: any;
+    weaponMode: any;
   };
 };
 
@@ -43,7 +48,7 @@ const matchInit1 = function (
 
   return {
     state: { presences, currentMatchStatus, emptyTicks: 0 },
-    tickRate: 20,
+    tickRate: 10,
     label: "",
   };
 };
@@ -96,6 +101,11 @@ const matchJoin1 = function (
       isStarted: false,
       ongoingMatchData: {
         direction: 0,
+        isJumping: false,
+        isAttacking: false,
+        isSkill: false,
+        velocity: "(0, 0)",
+        weaponMode: "Melee",
       },
     };
     logger.debug("%q JOINED MATCH", presence.userId);
@@ -164,6 +174,21 @@ const matchLoop1 = function (
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_DATA_UPDATE) {
       state.presences[dataJson.userId].ongoingMatchData.direction =
         dataJson.payload.ongoingMatchData.direction;
+
+      state.presences[dataJson.userId].ongoingMatchData.isJumping =
+        dataJson.payload.ongoingMatchData.isJumping;
+
+      state.presences[dataJson.userId].ongoingMatchData.isAttacking =
+        dataJson.payload.ongoingMatchData.isAttacking;
+
+      state.presences[dataJson.userId].ongoingMatchData.isSkill =
+        dataJson.payload.ongoingMatchData.isSkill;
+
+      state.presences[dataJson.userId].ongoingMatchData.velocity =
+        dataJson.payload.ongoingMatchData.velocity.toString();
+
+      state.presences[dataJson.userId].ongoingMatchData.weaponMode =
+        dataJson.payload.ongoingMatchData.weaponMode;
     }
   });
 
