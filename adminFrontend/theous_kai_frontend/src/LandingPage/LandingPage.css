@@ -1,0 +1,13 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+.main-div{
+    height: 100vh;
+    background-color: rgb(200, 200, 200);
+    background-size: contain;
+}
+.hero-content{
+    background-color: yellow;
+}
