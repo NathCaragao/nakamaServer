@@ -13,7 +13,7 @@ const LandingPage = () => {
                 </div>
             </div>
             <div className="row align-items-center justify-content-center h-auto p-0 m-0 flex-shrink-0 text-end">
-                <p>© All rights reserved. NCST S.Y. 2024-2025 PCJS-001 BSCS41-E1 Group 1</p>
+                <p>© 2024-present. All rights reserved. NCST S.Y. 2024-2025 PCJS-001 BSCS41-E1 Group 1</p>
             </div>
         </div>
     </>
