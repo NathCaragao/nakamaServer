@@ -1,15 +1,14 @@
 import { useState } from 'react'
-import './App.css'
 import LandingPage from './LandingPage/LandingPage'
 import { Routes, Route } from "react-router-dom";
-import AdmingLoginPage from './AdminLoginPage/AdmingLoginPage';
+import AdminLoginPage from './AdminLoginPage/AdminLoginPage';
 
 function App() {
   return (
     <>
     <Routes>
       <Route path="/" element={<LandingPage/>}></Route>
-      <Route path="/admin" element={<AdmingLoginPage/>}></Route>
+      <Route path="/admin" element={<AdminLoginPage/>}></Route>
     </Routes>
     </>
   )
