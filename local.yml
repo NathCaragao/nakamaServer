@@ -1,5 +1,7 @@
 console:
   max_message_size_bytes: 409600
+  username: "theousKaiAdmin1"
+  password: "NCST_thesis"
 logger:
   level: "DEBUG"
 runtime:
