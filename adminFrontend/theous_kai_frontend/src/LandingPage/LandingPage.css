@@ -10,3 +10,7 @@ body, html {
 .hero-content{
     background-color: yellow;
 }
+
+.hero-text{
+    text-align: justify;
+}
