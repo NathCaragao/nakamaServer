@@ -26,7 +26,7 @@ app.listen(PORT, () => {
 app.get("/download", async (request, response) => {
     console.log("Attempting to download file from:", gamePath);
 
-    response.download(gamePath, "BRUH.txt", (err) => {
+    response.download(gamePath, "Theous Kai.exe", (err) => {
         if (err) {
             console.error("Error during file download:", err);
             response.status(500).send("Failed to download file.");

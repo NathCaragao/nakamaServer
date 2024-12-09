@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 
-const AdminLoginPage = () => {
+const AdminLoginPage = ({authToken, setToken}) => {
     const adminLogin = async(adminUsername, adminPassword) => {
         let adminLoginPayload = {
             username: adminUsername,
@@ -10,7 +10,7 @@ const AdminLoginPage = () => {
     
         axios.post("http://127.0.0.1:5000/admin/login", adminLoginPayload)
         .then((response) => {
-            console.log(response.data.token);
+            setToken(response.data.token);
         });
     };
     
