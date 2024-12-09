@@ -1,7 +1,8 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
+import axios from "axios";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,13 +36,10 @@ app.get("/download", async (request, response) => {
     });
 });
 
+app.post("/admin/login", async (request, response) => {
+    if(request.body["username"] != "" && request.body["password"] != "") {
 
-import fs from "fs";
-
-fs.access(gamePath, fs.constants.F_OK, (err) => {
-    if (err) {
-        console.error("File not accessible:", err);
-    } else {
-        console.log("File is accessible:", gamePath);
     }
+
+    return response.json({token: "TestToken"})
 });
