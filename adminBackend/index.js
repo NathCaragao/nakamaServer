@@ -37,9 +37,17 @@ app.get("/download", async (request, response) => {
 });
 
 app.post("/admin/login", async (request, response) => {
+    const adminUsername = request.body["username"];
+    const adminPassword = request.body["password"];
+
     if(request.body["username"] != "" && request.body["password"] != "") {
-
+        await axios.post(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
+            "username": adminUsername,
+            "password": adminPassword,
+        }).then((result) => {
+            return response.status(201).json({token: result.data["token"]})
+        }).catch((err) => {
+            return response.status(501).json({message: "Error in authenticating admin, try again later."})
+        });
     }
-
-    return response.json({token: "TestToken"})
 });
