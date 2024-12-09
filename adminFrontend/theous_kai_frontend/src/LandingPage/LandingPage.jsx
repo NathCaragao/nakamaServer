@@ -1,10 +1,21 @@
 import React from 'react'
 import "./LandingPage.css";
 import windowsLogo from "../../assets/windows-logo.png";
+import axios from "axios";
+import { saveAs } from "file-saver";
 
-const downloadGame = () => {
-    
-}
+const downloadGame = async () => {
+    try {
+        const response = await axios.get("http://127.0.0.1:5000/download", {
+            responseType: "blob", // Ensure the response is treated as a file
+        });
+
+        // Use FileSaver to trigger the download
+        saveAs(response.data, "Theous Kai.exe");
+    } catch (error) {
+        console.error("Error downloading the file:", error);
+    }
+};
 
 const LandingPage = () => {
   return (
@@ -19,7 +30,7 @@ const LandingPage = () => {
                         of Greek mythology through an exciting platformer experience that turns learning into an adventure.
                         Forget the boredom as you jump, run, and immerse yourself in the stories of Greek Mythology!
                     </h5>
-                    <button className='m-3 btn btn-primary'>Download Now <img src={windowsLogo} alt="Windows Device only" className='mx-3'/></button>
+                    <button className='m-3 btn btn-primary' onClick={downloadGame}>Download Now <img src={windowsLogo} alt="Windows Device only" className='mx-3'/></button>
                 </div>
             </div>
             <div className="row align-items-center justify-content-center h-auto p-0 m-0 flex-shrink-0 text-end text-white">
