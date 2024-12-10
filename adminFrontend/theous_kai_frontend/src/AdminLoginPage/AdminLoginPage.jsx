@@ -9,7 +9,7 @@ const AdminLoginPage = () => {
 
     const authTokenChecker = useEffect(() => {
         if (authToken != "") {
-            navigate("/");
+            navigate("/admin/dashboard");
             return;
         }
     }, [authToken]);
