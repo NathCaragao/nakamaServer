@@ -66,3 +66,19 @@ app.get("/admin/players", async(request, response) => {
         return response.status(201).json(result.data);
     });
 });
+
+app.get("/admin/players/:playerId", async(request, response) => {
+    let authToken = request.headers['authorization'];
+    if(authToken == null) {
+        return response.status(401).json({message: "You are not authorized to do this."});
+    }
+
+    await axios.get(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`, {
+        headers: {
+            Authorization: `${authToken}`
+        }
+    }).then((result) => {
+        return response.status(201).json(result.data);
+    });
+});
+

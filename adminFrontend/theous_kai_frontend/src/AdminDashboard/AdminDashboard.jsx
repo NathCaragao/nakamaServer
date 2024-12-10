@@ -74,7 +74,7 @@ const AdminDashboard = () => {
                     {
                         players?.map((player) => {
                             if(player.id != "00000000-0000-0000-0000-000000000000") {
-                                return <UserCard key={player.id} playerId={player.id} playerEmail="IdkYet@gmail.com"/>
+                                return <UserCard key={player.id} playerId={player.id} playerDisplayName={player.display_name}/>
                             } else {
                                 return null;
                             }
