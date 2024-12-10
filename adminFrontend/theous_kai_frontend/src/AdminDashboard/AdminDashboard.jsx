@@ -12,7 +12,7 @@ const Tabs = {
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState(Tabs.Players);
     const [headerMessage, setHeaderMessage] = useState("");
-    const [players, setPlayers] = useState({});
+    const [players, setPlayers] = useState(null);
     const {authToken} = useAuth();
 
     useEffect(() => {
@@ -51,9 +51,6 @@ const AdminDashboard = () => {
 
   return (
     <>
-    {
-        console.log(players)
-    }
         <div className="container-fluid main-div p-0 m-0">
             <div className="row w-100 p-0 m-0 bg-primary">
                 <nav className='navbar navbar-expand p-4'>
@@ -74,7 +71,15 @@ const AdminDashboard = () => {
                 // Depending on active tab, change the contents of this div
                 <>
                     <h3 className='m-0 header-message py-2'>{headerMessage}</h3>
-                    <UserCard playerEmail="test1@gmail.com" playerId="69420" />
+                    {
+                        players?.map((player) => {
+                            if(player.id != "00000000-0000-0000-0000-000000000000") {
+                                return <UserCard key={player.id} playerId={player.id} playerEmail="IdkYet@gmail.com"/>
+                            } else {
+                                return null;
+                            }
+                        })
+                    }
                 </>
             }
             </div>
