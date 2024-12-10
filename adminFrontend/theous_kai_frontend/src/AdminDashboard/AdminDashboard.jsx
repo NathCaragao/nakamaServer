@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import icon from "../../assets/heraclesPortrait.png";
+import UserCard from './UserCard/UserCard';
 
 const Tabs = {
     Players: "players",
@@ -7,6 +8,13 @@ const Tabs = {
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState(Tabs.Players);
+    const [headerMessage, setHeaderMessage] = useState("");
+
+    useEffect(() => {
+        if (activeTab == Tabs.Players) {
+            setHeaderMessage("List of Theous Kai Players");
+        }
+    }, [activeTab]);
 
   return (
     <>
@@ -25,16 +33,15 @@ const AdminDashboard = () => {
                     </div>
                 </nav>
             </div>
-            <div className="row w-100 p-0 m-0"></div>
+            <div className="row w-100 p-0 m-0 bg-primary-subtle">
             {
                 // Depending on active tab, change the contents of this div
-                <div className="card">
-                    <div className="card-body">
-                        <h5 className='card-title'>ID: 238484584383489438348</h5>
-                        <p className="card-text">Email: Ni@gmail.com</p>
-                    </div>
-                </div>
+                <>
+                    <h3 className='m-3 ms-5 p-0 m-0'>{headerMessage}</h3>
+                    <UserCard playerEmail="test1@gmail.com" playerId="69420" />
+                </>
             }
+            </div>
         </div>
     </>
   )
