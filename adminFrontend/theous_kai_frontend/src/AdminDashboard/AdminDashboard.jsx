@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import icon from "../../assets/heraclesPortrait.png";
 import UserCard from './UserCard/UserCard';
+import "./AdminDashboard.css";
 
 const Tabs = {
     Players: "players",
@@ -20,15 +21,15 @@ const AdminDashboard = () => {
     <>
         <div className="container-fluid main-div p-0 m-0">
             <div className="row w-100 p-0 m-0 bg-primary">
-                <nav className='navbar navbar-expand'>
+                <nav className='navbar navbar-expand p-4'>
                     <span className="navbar-brand mb-0 h1">
-                        <img src={icon} alt="Logo" width="45" height="45" className="p-1 border border-3 bg-secondary my-2 mx-4 d-inline-block align-text-center"/>
+                        <img src={icon} alt="Logo" width="45" height="45" className="mx-3 border border-3 bg-secondary d-inline-block align-text-center"/>
                         Theous Kai Dashboard
                     </span>
-                    <div className="container justify-content-start">
-                        <button className='btn btn-outline-warning btn-sm me-2 active'>Players</button>
+                    <div className="container justify-content-start px-5">
+                        <button className='btn btn-outline-warning btn-sm active'>Players</button>
                     </div>
-                    <div className="container justify-content-end px-5">
+                    <div className="container justify-content-end">
                         <button className='btn btn-danger'>Logout</button>
                     </div>
                 </nav>
@@ -37,7 +38,7 @@ const AdminDashboard = () => {
             {
                 // Depending on active tab, change the contents of this div
                 <>
-                    <h3 className='m-3 ms-5 p-0 m-0'>{headerMessage}</h3>
+                    <h3 className='m-0 header-message py-2'>{headerMessage}</h3>
                     <UserCard playerEmail="test1@gmail.com" playerId="69420" />
                 </>
             }
