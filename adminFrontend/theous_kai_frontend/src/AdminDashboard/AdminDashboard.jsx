@@ -4,6 +4,7 @@ import UserCard from './UserCard/UserCard';
 import "./AdminDashboard.css";
 import axios from 'axios';
 import { useAuth } from '../AuthContextProvider/AuthContextProvider';
+import { useNavigate } from 'react-router-dom';
 
 const Tabs = {
     Players: "players",
@@ -13,7 +14,31 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState(Tabs.Players);
     const [headerMessage, setHeaderMessage] = useState("");
     const [players, setPlayers] = useState(null);
-    const {authToken} = useAuth();
+    const {authToken, logout} = useAuth();
+    const navigate = useNavigate();
+
+    // Add an effect to watch for token changes
+    useEffect(() => {
+        console.log("Current authToken:", authToken);
+        if (authToken === "") {
+            console.log("Token is empty, redirecting to /admin");
+            navigate("/admin");
+        }
+    }, [authToken, navigate]);
+
+    const logoutAdmin = async() => {
+        try {
+            await axios.post("http://localhost:5000/admin/logout", null, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            });
+            logout();
+        } catch (error) {
+            console.error("Logout error:", error);
+            logout();
+        }
+    };
 
     useEffect(() => {
         const fetchPlayers = async (authToken) => {
@@ -62,7 +87,7 @@ const AdminDashboard = () => {
                         <button className='btn btn-outline-warning btn-sm active px-4'>Players</button>
                     </div>
                     <div className="container justify-content-end">
-                        <button className='btn btn-danger px-5'>Logout</button>
+                        <button className='btn btn-danger px-5' onClick={logoutAdmin}>Logout</button>
                     </div>
                 </nav>
             </div>

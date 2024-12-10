@@ -82,3 +82,20 @@ app.get("/admin/players/:playerId", async(request, response) => {
     });
 });
 
+app.post(("/admin/logout"), async(request, response) => {
+    let authToken = request.headers['authorization'];
+    console.log(authToken);
+    if(authToken == null) {
+        return response.status(401).json({message: "You are not authorized to do this."});
+    }
+
+    await axios.get(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`, {
+        headers: {
+            Authorization: `${authToken}`
+        }
+    }).then(() => {
+        return response.status(201).json({message: "Success!"});
+    }).catch(() => {
+        return response.status(500).json({message: "Failed!"});;
+    })
+});
