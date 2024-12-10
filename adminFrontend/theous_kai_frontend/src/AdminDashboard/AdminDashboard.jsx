@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import icon from "../../assets/heraclesPortrait.png";
 
+const Tabs = {
+    Players: "players",
+}
+
 const AdminDashboard = () => {
+    const [activeTab, setActiveTab] = useState(Tabs.Players);
+
   return (
     <>
         <div className="container-fluid main-div p-0 m-0">
@@ -19,6 +25,16 @@ const AdminDashboard = () => {
                     </div>
                 </nav>
             </div>
+            <div className="row w-100 p-0 m-0"></div>
+            {
+                // Depending on active tab, change the contents of this div
+                <div className="card">
+                    <div className="card-body">
+                        <h5 className='card-title'>ID: 238484584383489438348</h5>
+                        <p className="card-text">Email: Ni@gmail.com</p>
+                    </div>
+                </div>
+            }
         </div>
     </>
   )
