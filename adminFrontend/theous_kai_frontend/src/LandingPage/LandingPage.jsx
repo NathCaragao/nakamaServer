@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./LandingPage.css";
 import windowsLogo from "../../assets/windows-logo.png";
+import faviconImage from "../../assets/heraclesPortrait.png";
 import axios from "axios";
 import { saveAs } from "file-saver";
 
@@ -18,6 +19,8 @@ const downloadGame = async () => {
 };
 
 const LandingPage = () => {
+
+      
   return (
     <>
         <div className='container-fluid main-div p-0 m-0 d-flex flex-column bg-secondary'>
