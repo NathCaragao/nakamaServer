@@ -7,7 +7,7 @@ import { saveAs } from "file-saver";
 
 const downloadGame = async () => {
     try {
-        const response = await axios.get("http://127.0.0.1:5000/download", {
+        const response = await axios.get("https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io/download", {
             responseType: "blob", // Ensure the response is treated as a file
         });
 

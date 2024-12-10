@@ -28,7 +28,7 @@ const AdminDashboard = () => {
 
     const logoutAdmin = async() => {
         try {
-            await axios.post("http://localhost:5000/admin/logout", null, {
+            await axios.post("https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io/admin/logout", null, {
                 headers: {
                     Authorization: `Bearer ${authToken}`
                 }
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
             let listOfPlayers = {};
             if (authToken !== "") {
                 try {
-                    const result = await axios.get("http://localhost:5000/admin/players", {
+                    const result = await axios.get("https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io/admin/players", {
                         headers: {
                             Authorization: `Bearer ${authToken}`
                         }

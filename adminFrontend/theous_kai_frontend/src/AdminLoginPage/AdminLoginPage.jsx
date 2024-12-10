@@ -21,7 +21,7 @@ const AdminLoginPage = () => {
             password: adminPassword,
         }
     
-        axios.post("http://127.0.0.1:5000/admin/login", adminLoginPayload)
+        axios.post("https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io/admin/login", adminLoginPayload)
         .then((response) => {
             setAuthToken(response.data.token);
         });

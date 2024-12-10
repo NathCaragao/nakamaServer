@@ -8,7 +8,7 @@ const UserCard = ({playerId, playerDisplayName}) => {
 
     useEffect(() => {
         const getUserEmail = async(playerId) => {
-            await axios.get(`http://localhost:5000/admin/players/${playerId}`, {
+            await axios.get(`https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io/admin/players/${playerId}`, {
                 headers: {
                     Authorization: `Bearer ${authToken}`
                 }

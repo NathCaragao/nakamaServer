@@ -15,7 +15,7 @@ const gamePath = path.join(__dirname, 'GameExecutable', 'Theous Kai_12_6_24.exe'
 
 // Setting up server dependencies
 const app = express();
-app.use(cors());
+app.use("*", cors());
 app.use(express.json());
 
 const PORT = process.env.PORT;
@@ -41,7 +41,7 @@ app.post("/admin/login", async (request, response) => {
     const adminPassword = request.body["password"];
 
     if(request.body["username"] != "" && request.body["password"] != "") {
-        await axios.post(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
+        await axios.post(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
             "username": adminUsername,
             "password": adminPassword,
         }).then((result) => {
@@ -58,7 +58,7 @@ app.get("/admin/players", async(request, response) => {
         return response.status(401).json({message: "You are not authorized to do this."});
     }
 
-    await axios.get(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account`, {
+    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account`, {
         headers: {
             Authorization: `${authToken}`
         }
@@ -73,7 +73,7 @@ app.get("/admin/players/:playerId", async(request, response) => {
         return response.status(401).json({message: "You are not authorized to do this."});
     }
 
-    await axios.get(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`, {
+    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`, {
         headers: {
             Authorization: `${authToken}`
         }
@@ -89,7 +89,7 @@ app.post(("/admin/logout"), async(request, response) => {
         return response.status(401).json({message: "You are not authorized to do this."});
     }
 
-    await axios.get(`http://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`, {
+    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`, {
         headers: {
             Authorization: `${authToken}`
         }
