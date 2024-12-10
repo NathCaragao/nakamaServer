@@ -1,22 +1,41 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState("");
+    const [authToken, setAuthToken] = useState(() => {
+        // Initialize from localStorage, or empty string if not found
+        return localStorage.getItem('authToken') || '';
+    });
 
-  const contextValue = {
-    authToken,
-    setAuthToken
-  };
+    // Whenever authToken changes, update localStorage
+    useEffect(() => {
+        if (authToken) {
+            localStorage.setItem('authToken', authToken);
+        } else {
+            // Remove the token from localStorage if it's empty
+            localStorage.removeItem('authToken');
+        }
+    }, [authToken]);
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+    // Logout function to clear the token
+    const logout = () => {
+        setAuthToken('');
+        localStorage.removeItem('authToken');
+    };
+
+    return (
+        <AuthContext.Provider value={{ 
+            authToken, 
+            setAuthToken, 
+            logout 
+        }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+// Custom hook for using auth context
+export const useAuth = () => {
+    return useContext(AuthContext);
 };
