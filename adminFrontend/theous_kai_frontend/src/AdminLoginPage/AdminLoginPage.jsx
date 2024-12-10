@@ -1,7 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useAuth } from '../AuthContextProvider/AuthContextProvider';
+import { useNavigate } from 'react-router-dom';
 
-const AdminLoginPage = ({authToken, setToken}) => {
+const AdminLoginPage = () => {
+    const {authToken, setAuthToken} = useAuth();
+    const navigate = useNavigate();
+
+    const authTokenChecker = useEffect(() => {
+        if (authToken != "") {
+            navigate("/");
+            return;
+        }
+    }, [authToken]);
+
+
     const adminLogin = async(adminUsername, adminPassword) => {
         let adminLoginPayload = {
             username: adminUsername,
@@ -10,14 +23,13 @@ const AdminLoginPage = ({authToken, setToken}) => {
     
         axios.post("http://127.0.0.1:5000/admin/login", adminLoginPayload)
         .then((response) => {
-            setToken(response.data.token);
+            setAuthToken(response.data.token);
         });
     };
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        adminLogin(adminUsername, adminPassword);
+        await adminLogin(adminUsername, adminPassword);
     }
     
     const [adminUsername, setAdminUsername] = useState("");
