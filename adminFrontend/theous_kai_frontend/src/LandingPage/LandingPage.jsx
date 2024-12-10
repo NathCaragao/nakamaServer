@@ -26,7 +26,7 @@ const LandingPage = () => {
         <div className='container-fluid main-div p-0 m-0 d-flex flex-column bg-secondary'>
             <div className="row align-items-center justify-content-center h-75 p-0 m-0 flex-grow-1">
                 <div className="column hero-content w-50 align-items-center justify-content-center text-center p-0 m-0">
-                    <h1 className='m-5'>THEOUS KAI</h1>
+                    <h1 className='m-5 text-primary-emphasis'>THEOUS KAI</h1>
                     <h5 className='my-3 mx-5 hero-text'>
                         Have you ever wanted to dive into the fascinating world of Greek Mythology but found massive texts
                         overwhelming and boring? Fear not! Theous Kai is here to help. Explore the wonders

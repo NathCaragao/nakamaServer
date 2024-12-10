@@ -4,6 +4,7 @@ type PlayerMultiplayerData = {
   playerData: {
     nakamaData: nkruntime.Presence;
     displayName: String;
+    
   };
 
   isReady: boolean;
@@ -17,6 +18,7 @@ type PlayerMultiplayerData = {
     velocity: any;
     weaponMode: any;
     position: any;
+    health: Number
   };
 };
 
@@ -108,6 +110,7 @@ const matchJoin1 = function (
         velocity: "(0, 0)",
         weaponMode: "Melee",
         position: "(0, 0)",
+        health: 0,
       },
     };
     logger.debug("%q JOINED MATCH", presence.userId);
@@ -194,6 +197,9 @@ const matchLoop1 = function (
 
       state.presences[dataJson.userId].ongoingMatchData.position =
         dataJson.payload.ongoingMatchData.position.toString();
+
+      state.presences[dataJson.userId].ongoingMatchData.health =
+        dataJson.payload.ongoingMatchData.health;
     }
   });
 
