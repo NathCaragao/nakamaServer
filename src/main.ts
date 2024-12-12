@@ -20,4 +20,5 @@ let InitModule: nkruntime.InitModule = function (
   });
 
   initializer.registerRpc("createMatchRPC", createMatchRPC);
+  initializer.registerRpc("findMatchRPC", findMatchRPC);
 };

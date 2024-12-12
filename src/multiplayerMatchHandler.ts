@@ -52,7 +52,7 @@ const matchInit1 = function (
   return {
     state: { presences, currentMatchStatus, emptyTicks: 0 },
     tickRate: 10,
-    label: "",
+    label: JSON.stringify({matchStatus: MatchStatus.LOBBY}),
   };
 };
 
