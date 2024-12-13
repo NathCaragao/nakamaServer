@@ -113,7 +113,6 @@ const matchJoin1 = function (
         health: 0,
       },
     };
-    logger.debug("%q JOINED MATCH", presence.userId);
   });
 
   return {
@@ -132,7 +131,6 @@ const matchLeave1 = function (
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
     delete state.presences[presence.userId];
-    logger.debug("%q LEFT MATCH", presence.userId);
   });
 
   return {
@@ -203,6 +201,19 @@ const matchLoop1 = function (
     }
   });
 
+  // Check the current match status
+  let isEveryPlayerStarted = true;
+  Object.keys(state.presences).forEach(function (presenceId) {
+    if (state.presences[presenceId].isStarted == false) {
+      isEveryPlayerStarted = false;
+    }
+  });
+  if (isEveryPlayerStarted) {
+    dispatcher.matchLabelUpdate(
+      JSON.stringify({ matchStatus: MatchStatus.ONGOING })
+    );
+  }
+
   // Broadcast message to every client
   dispatcher.broadcastMessage(
     MessageOpCode.DATA_FROM_SERVER,
@@ -241,8 +252,6 @@ const matchTerminate1 = function (
   state: nkruntime.MatchState,
   graceSeconds: number
 ): { state: nkruntime.MatchState } | null {
-  logger.debug("MATCH TERMINATING");
-
   return {
     state,
   };
