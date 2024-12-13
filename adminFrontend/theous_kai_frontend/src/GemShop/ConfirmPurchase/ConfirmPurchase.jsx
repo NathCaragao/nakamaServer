@@ -35,8 +35,11 @@ const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await confirmPurchase(gemAmount, phpAmount, userId, authToken, phoneNumber);
-    setSuccessFlag(true);
+    confirmPurchase(gemAmount, phpAmount, userId, authToken, phoneNumber).then(
+      (result) => {
+        setSuccessFlag(true);
+      }
+    );
   };
 
   useEffect(() => {

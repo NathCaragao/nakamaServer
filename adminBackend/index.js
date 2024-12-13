@@ -183,6 +183,8 @@ app.post("/purchase", async (request, response) => {
     decodedUserData["purchaseHistory"] = []; // Initialize as an empty array if it doesn't exist or isn't an array
   }
   decodedUserData["purchaseHistory"].push(purchaseInfo);
+  decodedUserData["premiumCurrency"] =
+    decodedUserData["premiumCurrency"] + Number(gemAmount);
 
   //   if (
   //     decodedUserData["purchaseHistory"] ||
@@ -213,5 +215,5 @@ app.post("/purchase", async (request, response) => {
       console.log("bruh");
     });
 
-  return response.status(200);
+  return response.status(200).json({ message: "Success" });
 });
