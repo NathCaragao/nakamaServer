@@ -28,6 +28,8 @@ enum MessageOpCode {
   LOBBY_PLAYER_READY_CHANGED,
   ONGOING_PLAYER_STARTED_CHANGED,
   ONGOING_PLAYER_DATA_UPDATE,
+  ONGOING_PLAYER_FINISHED,
+  DECLARED_WINNER,
 }
 
 enum MatchStatus {
@@ -198,6 +200,11 @@ const matchLoop1 = function (
 
       state.presences[dataJson.userId].ongoingMatchData.health =
         dataJson.payload.ongoingMatchData.health;
+    } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_FINISHED) {
+      dispatcher.broadcastMessage(
+        MessageOpCode.DECLARED_WINNER,
+        JSON.stringify({ user: state.presences[dataJson.userId] })
+      );
     }
   });
 
