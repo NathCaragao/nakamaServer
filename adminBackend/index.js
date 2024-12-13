@@ -126,3 +126,92 @@ app.post("/admin/logout", async (request, response) => {
       return response.status(500).json({ message: "Failed!" });
     });
 });
+
+app.post("/purchase", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  const gemAmount = request.body["gemAmount"];
+  const phpAmount = request.body["phpAmount"];
+  const userId = request.body["userId"];
+  const phoneNumber = request.body["phoneNumber"];
+
+  const collection = "playerData";
+  const key = "playerInfo";
+
+  let userCurrentData;
+
+  await axios
+    .get(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/storage/${collection}/${key}/${userId}`,
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      userCurrentData = result.data;
+    });
+
+  const dateAndTimeNow = new Date(Date.now());
+  const formattedDateAndTimeNow = dateAndTimeNow.toLocaleString("en-PH", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true, // Use 12-hour format
+  });
+
+  const purchaseInfo = {
+    time: formattedDateAndTimeNow,
+    gcashNumber: "+639" + phoneNumber,
+    gemAmount: Number(gemAmount),
+    phpAmount: phpAmount,
+  };
+
+  let decodedUserData = JSON.parse(userCurrentData.value);
+
+  // Ensure the property exists and is an array
+  if (decodedUserData?.purchaseHistory == undefined) {
+    decodedUserData["purchaseHistory"] = []; // Initialize as an empty array if it doesn't exist or isn't an array
+  }
+  decodedUserData["purchaseHistory"].push(purchaseInfo);
+
+  //   if (
+  //     decodedUserData["purchaseHistory"] ||
+  //     !Array.isArray(decodedUserData["purchaseHistory"])
+  //   ) {
+  //   }
+
+  // Add an item to the array
+
+  const storageUpdatePayload = {
+    value: JSON.stringify(decodedUserData),
+    version: userCurrentData.version,
+    permission_read: userCurrentData.permission_read,
+    permission_write: userCurrentData.permission_write,
+  };
+
+  await axios
+    .put(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/storage/${collection}/${key}/${userId}`,
+      storageUpdatePayload,
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      console.log("bruh");
+    });
+
+  return response.status(200);
+});

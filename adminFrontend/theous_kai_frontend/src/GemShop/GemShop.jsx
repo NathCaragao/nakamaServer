@@ -25,6 +25,7 @@ const GemShop = () => {
             gemAmount={gemParam.value}
             phpAmount={gemToPhp[gemParam.value]}
             setSuccessFlag={setConfirmedPurchase}
+            userId={gemParam.userId}
           />
         )}
       </div>
