@@ -1,15 +1,18 @@
 import express, { response } from "express";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 import axios from "axios";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const gamePath = path.join(__dirname, 'GameExecutable', 'Theous Kai_12_6_24.exe');
+const gamePath = path.join(
+  __dirname,
+  "GameExecutable",
+  "Theous Kai_12_6_24.exe"
+);
 // const gamePath = "C:\\Users\\Lenovo\\Desktop\\Thesis\\nakamaServer\\adminBackend\\GameExecutable\\BRUH.txt";
-
 
 // const gamePath = "./GameExecutable/Theous Kai_12_6_24.exe"
 
@@ -20,82 +23,106 @@ app.use(express.json());
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    console.log(`Nakama is at ${process.env.NAKAMA_CONSOLE_ADDRESS}`);
+  console.log(`Nakama is at ${process.env.NAKAMA_CONSOLE_ADDRESS}`);
 });
 
 app.get("/download", async (request, response) => {
-    console.log("Attempting to download file from:", gamePath);
+  console.log("Attempting to download file from:", gamePath);
 
-    response.download(gamePath, "Theous Kai.exe", (err) => {
-        if (err) {
-            console.error("Error during file download:", err);
-            response.status(500).send("Failed to download file.");
-        } else {
-            console.log("File successfully sent to client.");
-        }
-    });
+  response.download(gamePath, "Theous Kai.exe", (err) => {
+    if (err) {
+      console.error("Error during file download:", err);
+      response.status(500).send("Failed to download file.");
+    } else {
+      console.log("File successfully sent to client.");
+    }
+  });
 });
 
 app.post("/admin/login", async (request, response) => {
-    const adminUsername = request.body["username"];
-    const adminPassword = request.body["password"];
+  const adminUsername = request.body["username"];
+  const adminPassword = request.body["password"];
 
-    if(request.body["username"] != "" && request.body["password"] != "") {
-        await axios.post(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
-            "username": adminUsername,
-            "password": adminPassword,
-        }).then((result) => {
-            return response.status(201).json({token: result.data["token"]})
-        }).catch((err) => {
-            return response.status(501).json({message: "Error in authenticating admin, try again later."})
-        });
-    }
+  if (request.body["username"] != "" && request.body["password"] != "") {
+    await axios
+      .post(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
+        username: adminUsername,
+        password: adminPassword,
+      })
+      .then((result) => {
+        return response.status(201).json({ token: result.data["token"] });
+      })
+      .catch((err) => {
+        return response
+          .status(501)
+          .json({ message: "Error in authenticating admin, try again later." });
+      });
+  }
 });
 
-app.get("/admin/players", async(request, response) => {
-    let authToken = request.headers['authorization'];
-    if(authToken == null) {
-        return response.status(401).json({message: "You are not authorized to do this."});
-    }
+app.get("/admin/players", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
 
-    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account`, {
-        headers: {
-            Authorization: `${authToken}`
-        }
-    }).then((result) => {
-        return response.status(201).json(result.data);
-    });
-});
-
-app.get("/admin/players/:playerId", async(request, response) => {
-    let authToken = request.headers['authorization'];
-    if(authToken == null) {
-        return response.status(401).json({message: "You are not authorized to do this."});
-    }
-
-    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`, {
-        headers: {
-            Authorization: `${authToken}`
-        }
-    }).then((result) => {
-        return response.status(201).json(result.data);
-    });
-});
-
-app.post(("/admin/logout"), async(request, response) => {
-    let authToken = request.headers['authorization'];
-    console.log(authToken);
-    if(authToken == null) {
-        return response.status(401).json({message: "You are not authorized to do this."});
-    }
-
-    await axios.get(`https://${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`, {
-        headers: {
-            Authorization: `${authToken}`
-        }
-    }).then(() => {
-        return response.status(201).json({message: "Success!"});
-    }).catch(() => {
-        return response.status(500).json({message: "Failed!"});;
+  await axios
+    .get(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account`, {
+      headers: {
+        Authorization: `${authToken}`,
+      },
     })
+    .then((result) => {
+      return response.status(201).json(result.data);
+    });
+});
+
+app.get("/admin/players/:playerId", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  await axios
+    .get(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`,
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      return response.status(201).json(result.data);
+    });
+});
+
+app.post("/admin/logout", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  console.log(authToken);
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  await axios
+    .get(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`,
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then(() => {
+      return response.status(201).json({ message: "Success!" });
+    })
+    .catch(() => {
+      return response.status(500).json({ message: "Failed!" });
+    });
 });
