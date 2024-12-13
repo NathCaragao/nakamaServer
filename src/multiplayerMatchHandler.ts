@@ -30,6 +30,7 @@ enum MessageOpCode {
   ONGOING_PLAYER_DATA_UPDATE,
   ONGOING_PLAYER_FINISHED,
   DECLARED_WINNER,
+  ONGOING_PLAYER_LEFT,
 }
 
 enum MatchStatus {
@@ -132,6 +133,10 @@ const matchLeave1 = function (
   presences: nkruntime.Presence[]
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
+    dispatcher.broadcastMessage(
+      MessageOpCode.ONGOING_PLAYER_LEFT,
+      JSON.stringify({ userId: presence.userId })
+    );
     delete state.presences[presence.userId];
   });
 
@@ -209,16 +214,18 @@ const matchLoop1 = function (
   });
 
   // Check the current match status
-  let isEveryPlayerStarted = true;
-  Object.keys(state.presences).forEach(function (presenceId) {
-    if (state.presences[presenceId].isStarted == false) {
-      isEveryPlayerStarted = false;
+  if (getNumberOfPlayers(state.presences) >= 2) {
+    let isEveryPlayerStarted = true;
+    Object.keys(state.presences).forEach(function (presenceId) {
+      if (state.presences[presenceId].isStarted == false) {
+        isEveryPlayerStarted = false;
+      }
+    });
+    if (isEveryPlayerStarted) {
+      dispatcher.matchLabelUpdate(
+        JSON.stringify({ matchStatus: MatchStatus.ONGOING })
+      );
     }
-  });
-  if (isEveryPlayerStarted) {
-    dispatcher.matchLabelUpdate(
-      JSON.stringify({ matchStatus: MatchStatus.ONGOING })
-    );
   }
 
   // Broadcast message to every client
