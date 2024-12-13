@@ -13,7 +13,7 @@ const UserCard = ({ playerId, playerDisplayName }) => {
   useEffect(() => {
     const getUserEmail = async (playerId) => {
       await axios
-        .get(`${localServer}/admin/players/${playerId}`, {
+        .get(`${cloudServer}/admin/players/${playerId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

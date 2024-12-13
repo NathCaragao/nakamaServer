@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const logoutAdmin = async () => {
     try {
-      await axios.post(`${localServer}/admin/logout`, null, {
+      await axios.post(`${cloudServer}/admin/logout`, null, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
       let listOfPlayers = {};
       if (authToken !== "") {
         try {
-          const result = await axios.get(`${localServer}/admin/players`, {
+          const result = await axios.get(`${cloudServer}/admin/players`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
