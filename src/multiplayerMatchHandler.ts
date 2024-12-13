@@ -4,7 +4,6 @@ type PlayerMultiplayerData = {
   playerData: {
     nakamaData: nkruntime.Presence;
     displayName: String;
-    
   };
 
   isReady: boolean;
@@ -18,7 +17,7 @@ type PlayerMultiplayerData = {
     velocity: any;
     weaponMode: any;
     position: any;
-    health: Number
+    health: Number;
   };
 };
 
@@ -48,11 +47,12 @@ const matchInit1 = function (
 ): { state: nkruntime.MatchState; tickRate: number; label: string } {
   const presences: { [userId: string]: PlayerMultiplayerData } = {};
   var currentMatchStatus: MatchStatus = MatchStatus.LOBBY;
+  const initialLabel = { matchStatus: MatchStatus.LOBBY };
 
   return {
     state: { presences, currentMatchStatus, emptyTicks: 0 },
     tickRate: 10,
-    label: JSON.stringify({matchStatus: MatchStatus.LOBBY}),
+    label: JSON.stringify(initialLabel),
   };
 };
 
