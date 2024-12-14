@@ -24,10 +24,6 @@ const AdminDashboard = () => {
 
   const [message, setMessage] = useState("");
 
-  const handleOnClick = () => {
-    setMessage("BRUH");
-  };
-
   // Add an effect to watch for token changes
   useEffect(() => {
     console.log("Current authToken:", authToken);
@@ -127,7 +123,7 @@ const AdminDashboard = () => {
                         key={player.id}
                         playerId={player.id}
                         playerDisplayName={player.display_name}
-                        onClick={handleOnClick}
+                        onClick={setMessage}
                       />
                     );
                   } else {

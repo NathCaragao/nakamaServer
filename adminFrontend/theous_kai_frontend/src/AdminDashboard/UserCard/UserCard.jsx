@@ -32,7 +32,9 @@ const UserCard = ({ playerId, playerDisplayName, onClick }) => {
         className="card"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
-        onClick={onClick}
+        onClick={(e) => {
+          onClick(playerId);
+        }}
       >
         <div className="card-body">
           <h5 className="card-title">PlayerID: {playerId}</h5>
