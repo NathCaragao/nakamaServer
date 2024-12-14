@@ -5,6 +5,7 @@ import "./AdminDashboard.css";
 import axios from "axios";
 import { useAuth } from "../AuthContextProvider/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
+import UserModal from "./UserModal/UserModal";
 
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
@@ -20,6 +21,12 @@ const AdminDashboard = () => {
   const [players, setPlayers] = useState([]);
   const { authToken, logout } = useAuth();
   const navigate = useNavigate();
+
+  const [message, setMessage] = useState("");
+
+  const handleOnClick = () => {
+    setMessage("BRUH");
+  };
 
   // Add an effect to watch for token changes
   useEffect(() => {
@@ -120,6 +127,7 @@ const AdminDashboard = () => {
                         key={player.id}
                         playerId={player.id}
                         playerDisplayName={player.display_name}
+                        onClick={handleOnClick}
                       />
                     );
                   } else {
@@ -130,6 +138,8 @@ const AdminDashboard = () => {
             </>
           }
         </div>
+
+        <UserModal message={message} />
       </div>
     </>
   );

@@ -6,7 +6,7 @@ const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
 
-const UserCard = ({ playerId, playerDisplayName }) => {
+const UserCard = ({ playerId, playerDisplayName, onClick }) => {
   const { authToken } = useAuth();
   const [newEmail, setNewEmail] = useState();
 
@@ -19,6 +19,7 @@ const UserCard = ({ playerId, playerDisplayName }) => {
           },
         })
         .then((result) => {
+          console.log(result.data);
           setNewEmail(result.data.account.email);
         });
     };
@@ -27,7 +28,12 @@ const UserCard = ({ playerId, playerDisplayName }) => {
 
   return (
     <>
-      <div className="card">
+      <div
+        className="card"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+        onClick={onClick}
+      >
         <div className="card-body">
           <h5 className="card-title">PlayerID: {playerId}</h5>
           <p className="card-text">
