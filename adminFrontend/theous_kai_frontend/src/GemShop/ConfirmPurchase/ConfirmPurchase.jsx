@@ -21,7 +21,7 @@ const confirmPurchase = async (
     userId: userId,
     phoneNumber: phoneNumber,
   };
-  await axios.post(`${cloudServer}/purchase`, purchasePayload, {
+  await axios.post(`${localServer}/purchase`, purchasePayload, {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
@@ -45,7 +45,7 @@ const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
   useEffect(() => {
     const getUserDisplayName = async (playerId) => {
       await axios
-        .get(`${cloudServer}/admin/players/${playerId}`, {
+        .get(`${localServer}/admin/players/${playerId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

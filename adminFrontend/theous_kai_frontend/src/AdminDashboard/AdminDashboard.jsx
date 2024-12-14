@@ -17,7 +17,7 @@ const Tabs = {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(Tabs.Players);
   const [headerMessage, setHeaderMessage] = useState("");
-  const [players, setPlayers] = useState(null);
+  const [players, setPlayers] = useState([]);
   const { authToken, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const logoutAdmin = async () => {
     try {
-      await axios.post(`${cloudServer}/admin/logout`, null, {
+      await axios.post(`${localServer}/admin/logout`, null, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
       let listOfPlayers = [];
       if (authToken !== "") {
         try {
-          const result = await axios.get(`${cloudServer}/admin/players`, {
+          const result = await axios.get(`${localServer}/admin/players`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -57,6 +57,9 @@ const AdminDashboard = () => {
           listOfPlayers = result.data.users; // Ensure you're accessing the correct property
         } catch (error) {
           console.error("Error fetching players:", error);
+          await logout();
+          navigate("/admin");
+          return;
         }
       }
       return listOfPlayers;
@@ -70,7 +73,7 @@ const AdminDashboard = () => {
       };
 
       fetchData(); // Call the async function to fetch and set players
-
+      console.log(players);
       setHeaderMessage("List of Theous Kai Players");
     }
   }, [activeTab, authToken]); // Make sure authToken is also part of the dependency array
@@ -107,19 +110,23 @@ const AdminDashboard = () => {
             // Depending on active tab, change the contents of this div
             <>
               <h3 className="m-0 header-message py-2">{headerMessage}</h3>
-              {players?.map((player) => {
-                if (player.id != "00000000-0000-0000-0000-000000000000") {
-                  return (
-                    <UserCard
-                      key={player.id}
-                      playerId={player.id}
-                      playerDisplayName={player.display_name}
-                    />
-                  );
-                } else {
-                  return null;
-                }
-              })}
+              {players.length == 1 ? (
+                <h5>No Players found.</h5>
+              ) : (
+                players?.map((player) => {
+                  if (player.id != "00000000-0000-0000-0000-000000000000") {
+                    return (
+                      <UserCard
+                        key={player.id}
+                        playerId={player.id}
+                        playerDisplayName={player.display_name}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                })
+              )}
             </>
           }
         </div>

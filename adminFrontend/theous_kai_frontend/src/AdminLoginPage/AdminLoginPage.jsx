@@ -25,7 +25,7 @@ const AdminLoginPage = () => {
     };
 
     axios
-      .post(`${cloudServer}/admin/login`, adminLoginPayload)
+      .post(`${localServer}/admin/login`, adminLoginPayload)
       .then((response) => {
         setAuthToken(response.data.token);
       });

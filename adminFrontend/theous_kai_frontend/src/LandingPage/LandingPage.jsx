@@ -11,7 +11,7 @@ const cloudServer =
 
 const downloadGame = async () => {
   try {
-    const response = await axios.get(`${cloudServer}/download`, {
+    const response = await axios.get(`${localServer}/download`, {
       responseType: "blob", // Ensure the response is treated as a file
     });
 
