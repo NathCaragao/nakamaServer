@@ -24,10 +24,13 @@ const AdminLoginPage = () => {
       password: adminPassword,
     };
 
-    axios
+    await axios
       .post(`${localServer}/admin/login`, adminLoginPayload)
       .then((response) => {
         setAuthToken(response.data.token);
+      })
+      .catch((error) => {
+        alert("Error occured while signing in. Try again");
       });
   };
 
