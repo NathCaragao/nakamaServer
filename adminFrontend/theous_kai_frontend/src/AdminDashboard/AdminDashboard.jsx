@@ -22,7 +22,7 @@ const AdminDashboard = () => {
   const { authToken, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [message, setMessage] = useState("");
+  const [selectedPlayerId, setSelectedPlayerId] = useState("");
 
   // Add an effect to watch for token changes
   useEffect(() => {
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
                         key={player.id}
                         playerId={player.id}
                         playerDisplayName={player.display_name}
-                        onClick={setMessage}
+                        onClick={setSelectedPlayerId}
                       />
                     );
                   } else {
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
           }
         </div>
 
-        <UserModal message={message} />
+        <UserModal playerId={selectedPlayerId} />
       </div>
     </>
   );
