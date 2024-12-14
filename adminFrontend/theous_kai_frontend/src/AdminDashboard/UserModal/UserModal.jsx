@@ -69,13 +69,13 @@ const UserModal = ({ playerId }) => {
               </span>
               {playerData?.email}
             </h5>
-            <h5>
+            <h5 className="mt-3">
               <span className="text-primary-emphasis mx-1 fw-bold fs-6">
                 Username:
               </span>
               {playerData?.user?.display_name}
             </h5>
-            <h5>
+            <h5 className="mt-3">
               <span className="text-primary-emphasis mx-1 fw-bold fs-6">
                 Purchase History:
               </span>
@@ -83,7 +83,9 @@ const UserModal = ({ playerId }) => {
             {playerStorageData?.purchaseHistory ? (
               <h5>Wow you bough something</h5>
             ) : (
-              "Player has no purchase history yet."
+              <h5 className="fs-5 text-danger">
+                Player has no purchase history yet.
+              </h5>
             )}
           </div>
         </div>

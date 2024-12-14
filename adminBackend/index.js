@@ -39,23 +39,31 @@ app.get("/download", async (request, response) => {
   });
 });
 
+const loginAdmin = async (adminUsername, adminPassword) => {
+  return await axios
+    .post(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
+      username: adminUsername,
+      password: adminPassword,
+    })
+    .then((result) => {
+      return result.data["token"];
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
 app.post("/admin/login", async (request, response) => {
   const adminUsername = request.body["username"];
   const adminPassword = request.body["password"];
 
   if (request.body["username"] != "" && request.body["password"] != "") {
-    await axios
-      .post(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
-        username: adminUsername,
-        password: adminPassword,
-      })
+    await loginAdmin(adminUsername, adminPassword)
       .then((result) => {
-        return response.status(201).json({ token: result.data["token"] });
+        return response.status(201).json({ token: result });
       })
       .catch((err) => {
-        return response
-          .status(501)
-          .json({ message: "Error in authenticating admin, try again later." });
+        return response.status(501).json({ message: err });
       });
   }
 });
@@ -127,12 +135,22 @@ app.post("/admin/logout", async (request, response) => {
 });
 
 app.post("/purchase", async (request, response) => {
-  let authToken = request.headers["authorization"];
-  if (authToken == null) {
-    return response
-      .status(401)
-      .json({ message: "You are not authorized to do this." });
-  }
+  // let authToken = request.headers["authorization"];
+  // if (authToken == null) {
+  //   return response
+  //     .status(401)
+  //     .json({ message: "You are not authorized to do this." });
+  // }
+  let authToken;
+  await loginAdmin("theousKaiAdmin1", "NCST_thesis")
+    .then((result) => {
+      authToken = result;
+    })
+    .catch((err) => {
+      return response
+        .status(401)
+        .json({ message: "You are not authorized to do this." });
+    });
 
   const gemAmount = request.body["gemAmount"];
   const phpAmount = request.body["phpAmount"];
