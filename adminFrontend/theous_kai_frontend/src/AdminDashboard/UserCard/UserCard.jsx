@@ -19,7 +19,6 @@ const UserCard = ({ playerId, playerDisplayName, onClick }) => {
           },
         })
         .then((result) => {
-          console.log(result.data);
           setNewEmail(result.data.account.email);
         });
     };

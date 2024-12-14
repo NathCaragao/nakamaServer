@@ -8,6 +8,7 @@ const UserModal = ({ playerId }) => {
     "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
   const { authToken } = useAuth();
   const [playerData, setPlayerData] = useState();
+  const [playerStorageData, setPlayerStorageData] = useState();
 
   useEffect(() => {
     const getUserData = async (playerId) => {
@@ -22,6 +23,21 @@ const UserModal = ({ playerId }) => {
         });
     };
     getUserData(playerId);
+  }, [playerId]);
+
+  useEffect(() => {
+    const getUserStorageData = async (playerId) => {
+      await axios
+        .get(`${localServer}/player/storage/${playerId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((result) => {
+          setPlayerStorageData(JSON.parse(result?.data?.result?.value));
+        });
+    };
+    getUserStorageData(playerId);
   }, [playerId]);
 
   return (
@@ -59,6 +75,16 @@ const UserModal = ({ playerId }) => {
               </span>
               {playerData?.user?.display_name}
             </h5>
+            <h5>
+              <span className="text-primary-emphasis mx-1 fw-bold fs-6">
+                Purchase History:
+              </span>
+            </h5>
+            {playerStorageData?.purchaseHistory ? (
+              <h5>Wow you bough something</h5>
+            ) : (
+              "Player has no purchase history yet."
+            )}
           </div>
         </div>
       </div>

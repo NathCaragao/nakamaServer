@@ -103,7 +103,6 @@ app.get("/admin/players/:playerId", async (request, response) => {
 
 app.post("/admin/logout", async (request, response) => {
   let authToken = request.headers["authorization"];
-  console.log(authToken);
   if (authToken == null) {
     return response
       .status(401)
@@ -216,4 +215,22 @@ app.post("/purchase", async (request, response) => {
     });
 
   return response.status(200).json({ message: "Success" });
+});
+
+app.get("/player/storage/:playerId", async (request, response) => {
+  const collection = "playerData";
+  const key = "playerInfo";
+  let authToken = request.headers["authorization"];
+  await axios
+    .get(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/storage/${collection}/${key}/${request.params.playerId}`,
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      return response.status(201).json({ result: result.data });
+    });
 });
