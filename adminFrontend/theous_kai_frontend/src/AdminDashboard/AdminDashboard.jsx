@@ -46,7 +46,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchPlayers = async (authToken) => {
-      let listOfPlayers = {};
+      let listOfPlayers = [];
       if (authToken !== "") {
         try {
           const result = await axios.get(`${cloudServer}/admin/players`, {
