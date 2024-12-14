@@ -118,7 +118,7 @@ app.post("/admin/logout", async (request, response) => {
   }
 
   await axios
-    .get(
+    .post(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`,
       {
         headers: {
@@ -135,16 +135,10 @@ app.post("/admin/logout", async (request, response) => {
 });
 
 app.post("/purchase", async (request, response) => {
-  // let authToken = request.headers["authorization"];
-  // if (authToken == null) {
-  //   return response
-  //     .status(401)
-  //     .json({ message: "You are not authorized to do this." });
-  // }
   let authToken;
   await loginAdmin("theousKaiAdmin1", "NCST_thesis")
     .then((result) => {
-      authToken = result;
+      authToken = `Bearer ${result}`;
     })
     .catch((err) => {
       return response
@@ -231,6 +225,15 @@ app.post("/purchase", async (request, response) => {
     .then((result) => {
       console.log("bruh");
     });
+
+  await axios.post(
+    `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`,
+    {
+      headers: {
+        Authorization: `${authToken}`,
+      },
+    }
+  );
 
   return response.status(200).json({ message: "Success" });
 });
