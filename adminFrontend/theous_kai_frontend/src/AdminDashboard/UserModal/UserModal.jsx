@@ -23,7 +23,7 @@ const UserModal = ({ playerId }) => {
         });
     };
     getUserData(playerId);
-  }, [playerId]);
+  }, [playerId, authToken]);
 
   useEffect(() => {
     const getUserStorageData = async (playerId) => {
@@ -48,7 +48,7 @@ const UserModal = ({ playerId }) => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog modal-lg">
+      <div className="modal-dialog modal-xl">
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -81,7 +81,26 @@ const UserModal = ({ playerId }) => {
               </span>
             </h5>
             {playerStorageData?.purchaseHistory ? (
-              <h5>Wow you bough something</h5>
+              <table className="table-primary table table-striped-columns">
+                <thead>
+                  <tr className="text-center fs-6 align-middle">
+                    <th>Time of purchase</th>
+                    <th>GCash Number</th>
+                    <th>Gems acquired by player</th>
+                    <th>Philippine Peso spent by player</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {playerStorageData.purchaseHistory.map((purchase) => (
+                    <tr key={purchase.time} className="table-light">
+                      <td>{purchase.time}</td>
+                      <td className="text-center">{purchase.gcashNumber}</td>
+                      <td className="text-center">{purchase.gemAmount}</td>
+                      <td className="text-center">₱{purchase.phpAmount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
               <h5 className="fs-5 text-danger">
                 Player has no purchase history yet.
