@@ -18,6 +18,7 @@ type PlayerMultiplayerData = {
     weaponMode: any;
     position: any;
     health: Number;
+    character: String;
   };
 };
 
@@ -31,6 +32,7 @@ enum MessageOpCode {
   ONGOING_PLAYER_FINISHED,
   DECLARED_WINNER,
   ONGOING_PLAYER_LEFT,
+  PLAYER_UPDATE_USED_CHARACTER,
 }
 
 enum MatchStatus {
@@ -120,6 +122,7 @@ const matchJoin1 = function (
         weaponMode: "Melee",
         position: "(0, 0)",
         health: 0,
+        character: "",
       },
     };
   });
@@ -178,6 +181,9 @@ const matchLoop1 = function (
       state.presences[dataJson.userId].isReady = dataJson.payload.isReady;
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_STARTED_CHANGED) {
       state.presences[dataJson.userId].isStarted = dataJson.payload.isStarted;
+    } else if (message.opCode == MessageOpCode.PLAYER_UPDATE_USED_CHARACTER) {
+      state.presences[dataJson.userId].ongoingMatchData.character =
+        dataJson.payload.character;
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_DATA_UPDATE) {
       if (state?.presences[dataJson.userId]?.ongoingMatchData) {
         state.presences[dataJson.userId].ongoingMatchData.direction =
