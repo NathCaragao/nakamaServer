@@ -3,6 +3,8 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import axios from "axios";
+import { request } from "http";
+import { rmSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -253,5 +255,87 @@ app.get("/player/storage/:playerId", async (request, response) => {
     )
     .then((result) => {
       return response.status(201).json({ result: result.data });
+    });
+});
+
+app.post("/ban/:playerId", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  await axios
+    .post(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}/ban`,
+      {
+        id: request.params.id,
+      },
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      return response.status(201).json({ message: "Success" });
+    })
+    .catch((err) => {
+      return response.status(501).json({ message: "Failed" });
+    });
+});
+
+app.post("/unban/:playerId", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  await axios
+    .post(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}/unban`,
+      {
+        id: request.params.id,
+      },
+      {
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((result) => {
+      return response.status(201).json({ message: "Success" });
+    })
+    .catch((err) => {
+      return response.status(501).json({ message: "Failed" });
+    });
+});
+
+app.delete("/delete/:playerId", async (request, response) => {
+  let authToken = request.headers["authorization"];
+  if (authToken == null) {
+    return response
+      .status(401)
+      .json({ message: "You are not authorized to do this." });
+  }
+
+  await axios
+    .delete(
+      `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`,
+      {
+        id: request.params.id,
+        headers: {
+          Authorization: `${authToken}`,
+        },
+      }
+    )
+    .then((res) => {
+      return response.status(201).json({ message: "Success" });
+    })
+    .catch((err) => {
+      return response.status(501).json({ message: "Failed" });
     });
 });

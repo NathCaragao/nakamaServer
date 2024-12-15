@@ -2,16 +2,68 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContextProvider/AuthContextProvider";
 
+const localServer = "http://127.0.0.1:5000";
+const cloudServer =
+  "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
+
+const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
+  await axios
+    .post(`${localServer}/ban/${playerId}`, null, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .then((res) => {
+      setDummyState((dummyState = dummyState + 1));
+      alert("Player Successfully banned.");
+    })
+    .catch((err) => {
+      alert("Error in Banning Player. Refresh page and try again.");
+    });
+};
+
+const unbanPlayer = async (dummyState, setDummyState, playerId, authToken) => {
+  await axios
+    .post(`${localServer}/unban/${playerId}`, null, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .then((res) => {
+      setDummyState((dummyState = dummyState + 1));
+      alert("Player Successfully unbanned.");
+    })
+    .catch((err) => {
+      alert("Error in unbanning Player. Refresh page and try again.");
+    });
+};
+
+const deletePlayer = async (dummyState, setDummyState, playerId, authToken) => {
+  await axios
+    .delete(`${localServer}/delete/${playerId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+    .then((res) => {
+      setDummyState((dummyState = dummyState + 1));
+      alert("Player Successfully deleted.");
+    })
+    .catch((err) => {
+      alert("Error in deleting Player. Refresh page and try again.");
+    });
+};
+
 const UserModal = ({ playerId, setPlayerId }) => {
-  const localServer = "http://127.0.0.1:5000";
-  const cloudServer =
-    "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
   const { authToken } = useAuth();
   const [playerData, setPlayerData] = useState();
   const [playerStorageData, setPlayerStorageData] = useState();
 
+  const [dummyState, setDummyState] = useState(0);
+
   useEffect(() => {
     const getUserData = async (playerId) => {
+      if (playerId == "") return;
       await axios
         .get(`${localServer}/admin/players/${playerId}`, {
           headers: {
@@ -23,10 +75,11 @@ const UserModal = ({ playerId, setPlayerId }) => {
         });
     };
     getUserData(playerId);
-  }, [playerId, authToken]);
+  }, [playerId, authToken, dummyState]);
 
   useEffect(() => {
     const getUserStorageData = async (playerId) => {
+      if (playerId == "") return;
       await axios
         .get(`${localServer}/player/storage/${playerId}`, {
           headers: {
@@ -38,7 +91,7 @@ const UserModal = ({ playerId, setPlayerId }) => {
         });
     };
     getUserStorageData(playerId);
-  }, [playerId]);
+  }, [playerId, dummyState]);
 
   return (
     <div
@@ -62,7 +115,6 @@ const UserModal = ({ playerId, setPlayerId }) => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              // onClick={setPlayerId("")}
             ></button>
           </div>
           <div className="modal-body">
@@ -82,7 +134,11 @@ const UserModal = ({ playerId, setPlayerId }) => {
               <span className="text-primary-emphasis mx-1 fw-bold fs-6">
                 Ban Status:
               </span>
-              {playerData?.disable_time ? "Banned" : "Not Banned"}
+              {playerData?.disable_time ? (
+                <span className="text-danger">Banned</span>
+              ) : (
+                <span className="text-success">Not Banned</span>
+              )}
             </h5>
             <h5 className="mt-3">
               <span className="text-primary-emphasis mx-1 fw-bold fs-6">
@@ -121,8 +177,35 @@ const UserModal = ({ playerId, setPlayerId }) => {
               </span>
             </h5>
             <div className="justify-content-start d-flex gap-3">
-              <button className="btn btn-danger">Ban Player</button>
-              <button className="btn btn-danger">Delete Player</button>
+              {playerData?.disable_time ? (
+                <button
+                  className="btn btn-success"
+                  onClick={(e) => {
+                    unbanPlayer(dummyState, setDummyState, playerId, authToken);
+                  }}
+                >
+                  Unban Player
+                </button>
+              ) : (
+                <button
+                  className="btn btn-danger"
+                  onClick={(e) => {
+                    banPlayer(dummyState, setDummyState, playerId, authToken);
+                  }}
+                >
+                  Ban Player
+                </button>
+              )}
+              <button
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                onClick={(e) => {
+                  deletePlayer(dummyState, setDummyState, playerId, authToken);
+                  setPlayerId("");
+                }}
+              >
+                Delete Player
+              </button>
             </div>
           </div>
         </div>
