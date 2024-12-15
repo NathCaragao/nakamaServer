@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContextProvider/AuthContextProvider";
 
-const UserModal = ({ playerId }) => {
+const UserModal = ({ playerId, setPlayerId }) => {
   const localServer = "http://127.0.0.1:5000";
   const cloudServer =
     "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
@@ -47,6 +47,8 @@ const UserModal = ({ playerId }) => {
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div className="modal-dialog modal-xl">
         <div className="modal-content">
@@ -60,6 +62,7 @@ const UserModal = ({ playerId }) => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              // onClick={setPlayerId("")}
             ></button>
           </div>
           <div className="modal-body">
@@ -74,6 +77,12 @@ const UserModal = ({ playerId }) => {
                 Username:
               </span>
               {playerData?.user?.display_name}
+            </h5>
+            <h5 className="mt-3">
+              <span className="text-primary-emphasis mx-1 fw-bold fs-6">
+                Ban Status:
+              </span>
+              {playerData?.disable_time ? "Banned" : "Not Banned"}
             </h5>
             <h5 className="mt-3">
               <span className="text-primary-emphasis mx-1 fw-bold fs-6">
@@ -106,6 +115,15 @@ const UserModal = ({ playerId }) => {
                 Player has no purchase history yet.
               </h5>
             )}
+            <h5 className="mt-4">
+              <span className="text-primary-emphasis mx-1 fw-bold fs-6">
+                Additional Actions:
+              </span>
+            </h5>
+            <div className="justify-content-start d-flex gap-3">
+              <button className="btn btn-danger">Ban Player</button>
+              <button className="btn btn-danger">Delete Player</button>
+            </div>
           </div>
         </div>
       </div>

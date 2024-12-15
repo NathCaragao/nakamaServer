@@ -135,7 +135,10 @@ const AdminDashboard = () => {
           }
         </div>
 
-        <UserModal playerId={selectedPlayerId} />
+        <UserModal
+          playerId={selectedPlayerId}
+          setPlayerId={setSelectedPlayerId}
+        />
       </div>
     </>
   );
