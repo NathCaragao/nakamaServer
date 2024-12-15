@@ -38,7 +38,14 @@ const unbanPlayer = async (dummyState, setDummyState, playerId, authToken) => {
     });
 };
 
-const deletePlayer = async (dummyState, setDummyState, playerId, authToken) => {
+const deletePlayer = async (
+  dummyState,
+  setDummyState,
+  playerId,
+  authToken,
+  renderState,
+  setRenderState
+) => {
   await axios
     .delete(`${localServer}/delete/${playerId}`, {
       headers: {
@@ -46,15 +53,20 @@ const deletePlayer = async (dummyState, setDummyState, playerId, authToken) => {
       },
     })
     .then((res) => {
-      setDummyState((dummyState = dummyState + 1));
       alert("Player Successfully deleted.");
+      setRenderState(renderState + 1);
     })
     .catch((err) => {
       alert("Error in deleting Player. Refresh page and try again.");
     });
 };
 
-const UserModal = ({ playerId, setPlayerId }) => {
+const UserModal = ({
+  playerId,
+  setPlayerId,
+  setParentRender,
+  parentRender,
+}) => {
   const { authToken } = useAuth();
   const [playerData, setPlayerData] = useState();
   const [playerStorageData, setPlayerStorageData] = useState();
@@ -200,8 +212,14 @@ const UserModal = ({ playerId, setPlayerId }) => {
                 className="btn btn-danger"
                 data-bs-dismiss="modal"
                 onClick={(e) => {
-                  deletePlayer(dummyState, setDummyState, playerId, authToken);
-                  setPlayerId("");
+                  deletePlayer(
+                    dummyState,
+                    setDummyState,
+                    playerId,
+                    authToken,
+                    parentRender,
+                    setParentRender
+                  );
                 }}
               >
                 Delete Player

@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const [selectedPlayerId, setSelectedPlayerId] = useState("");
+  const [renderState, setRenderState] = useState(0);
 
   // Add an effect to watch for token changes
   useEffect(() => {
@@ -79,7 +80,7 @@ const AdminDashboard = () => {
       console.log(players);
       setHeaderMessage("List of Theous Kai Players");
     }
-  }, [activeTab, authToken]); // Make sure authToken is also part of the dependency array
+  }, [activeTab, authToken, renderState]); // Make sure authToken is also part of the dependency array
 
   return (
     <>
@@ -138,6 +139,8 @@ const AdminDashboard = () => {
         <UserModal
           playerId={selectedPlayerId}
           setPlayerId={setSelectedPlayerId}
+          setParentRender={setRenderState}
+          ParentRender={renderState}
         />
       </div>
     </>
