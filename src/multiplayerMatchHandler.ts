@@ -51,9 +51,15 @@ const matchInit1 = function (
   const presences: { [userId: string]: PlayerMultiplayerData } = {};
   var currentMatchStatus: MatchStatus = MatchStatus.LOBBY;
   const initialLabel = { matchStatus: MatchStatus.LOBBY };
+  var firstPlacePlayer: any = null;
 
   return {
-    state: { presences, currentMatchStatus, emptyTicks: 0 },
+    state: {
+      presences,
+      currentMatchStatus,
+      emptyTicks: 0,
+      firstPlacePlayer,
+    },
     tickRate: 10,
     label: JSON.stringify(initialLabel),
   };
@@ -173,33 +179,39 @@ const matchLoop1 = function (
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_STARTED_CHANGED) {
       state.presences[dataJson.userId].isStarted = dataJson.payload.isStarted;
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_DATA_UPDATE) {
-      state.presences[dataJson.userId].ongoingMatchData.direction =
-        dataJson.payload.ongoingMatchData.direction;
+      if (state?.presences[dataJson.userId]?.ongoingMatchData) {
+        state.presences[dataJson.userId].ongoingMatchData.direction =
+          dataJson.payload.ongoingMatchData.direction;
 
-      state.presences[dataJson.userId].ongoingMatchData.isJumping =
-        dataJson.payload.ongoingMatchData.isJumping;
+        state.presences[dataJson.userId].ongoingMatchData.isJumping =
+          dataJson.payload.ongoingMatchData.isJumping;
 
-      state.presences[dataJson.userId].ongoingMatchData.isAttacking =
-        dataJson.payload.ongoingMatchData.isAttacking;
+        state.presences[dataJson.userId].ongoingMatchData.isAttacking =
+          dataJson.payload.ongoingMatchData.isAttacking;
 
-      state.presences[dataJson.userId].ongoingMatchData.isSkill =
-        dataJson.payload.ongoingMatchData.isSkill;
+        state.presences[dataJson.userId].ongoingMatchData.isSkill =
+          dataJson.payload.ongoingMatchData.isSkill;
 
-      state.presences[dataJson.userId].ongoingMatchData.velocity =
-        dataJson.payload.ongoingMatchData.velocity.toString();
+        state.presences[dataJson.userId].ongoingMatchData.velocity =
+          dataJson.payload.ongoingMatchData.velocity.toString();
 
-      state.presences[dataJson.userId].ongoingMatchData.weaponMode =
-        dataJson.payload.ongoingMatchData.weaponMode;
+        state.presences[dataJson.userId].ongoingMatchData.weaponMode =
+          dataJson.payload.ongoingMatchData.weaponMode;
 
-      state.presences[dataJson.userId].ongoingMatchData.position =
-        dataJson.payload.ongoingMatchData.position.toString();
+        state.presences[dataJson.userId].ongoingMatchData.position =
+          dataJson.payload.ongoingMatchData.position.toString();
 
-      state.presences[dataJson.userId].ongoingMatchData.health =
-        dataJson.payload.ongoingMatchData.health;
+        state.presences[dataJson.userId].ongoingMatchData.health =
+          dataJson.payload.ongoingMatchData.health;
+      }
     } else if (message.opCode == MessageOpCode.ONGOING_PLAYER_FINISHED) {
+      state.firstPlacePlayer =
+        state.firstPlacePlayer == null
+          ? state.presences[dataJson.userId]
+          : state.firstPlacePlayer;
       dispatcher.broadcastMessage(
         MessageOpCode.DECLARED_WINNER,
-        JSON.stringify({ user: state.presences[dataJson.userId] })
+        JSON.stringify({ user: state.firstPlacePlayer })
       );
     }
   });
