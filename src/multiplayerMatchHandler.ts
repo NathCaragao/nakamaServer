@@ -157,15 +157,6 @@ const matchLoop1 = function (
   // Check if host is still in match
   // MIGHT BE BETTER MOVED TO MATCH_LEAVE() AND ADD A BROADCAST WHEN THE HOST LEAVES
   // SO THAT CLIENT CAN HANDLE IT AND TERMINATE THE MATCH THEN MOVE TO NO_MATCH_GUI
-  if (getNumberOfPlayers(state.presences) >= 1) {
-    var isHostPresent = false;
-    Object.keys(state.presences).forEach(function (presenceId) {
-      if (state.presences[presenceId].isHost == true) {
-        isHostPresent = true;
-      }
-    });
-    if (isHostPresent == false) return null;
-  }
 
   // Process messages from clients
   messages.forEach(function (message) {
