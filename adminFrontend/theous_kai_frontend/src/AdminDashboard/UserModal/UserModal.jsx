@@ -8,7 +8,7 @@ const cloudServer =
 
 const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
   await axios
-    .post(`${localServer}/ban/${playerId}`, null, {
+    .post(`${cloudServer}/ban/${playerId}`, null, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -24,7 +24,7 @@ const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
 
 const unbanPlayer = async (dummyState, setDummyState, playerId, authToken) => {
   await axios
-    .post(`${localServer}/unban/${playerId}`, null, {
+    .post(`${cloudServer}/unban/${playerId}`, null, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -47,7 +47,7 @@ const deletePlayer = async (
   setRenderState
 ) => {
   await axios
-    .delete(`${localServer}/delete/${playerId}`, {
+    .delete(`${cloudServer}/delete/${playerId}`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -77,7 +77,7 @@ const UserModal = ({
     const getUserData = async (playerId) => {
       if (playerId == "") return;
       await axios
-        .get(`${localServer}/admin/players/${playerId}`, {
+        .get(`${cloudServer}/admin/players/${playerId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -93,7 +93,7 @@ const UserModal = ({
     const getUserStorageData = async (playerId) => {
       if (playerId == "") return;
       await axios
-        .get(`${localServer}/player/storage/${playerId}`, {
+        .get(`${cloudServer}/player/storage/${playerId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
