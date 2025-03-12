@@ -5,32 +5,22 @@ import { fileURLToPath } from "url";
 import axios from "axios";
 import { request } from "http";
 import { rmSync } from "fs";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const gamePath = path.join(
   __dirname,
   "GameExecutable",
   "Theous Kai_12_6_24.exe"
 );
-// const gamePath = "C:\\Users\\Lenovo\\Desktop\\Thesis\\nakamaServer\\adminBackend\\GameExecutable\\BRUH.txt";
-
-// const gamePath = "./GameExecutable/Theous Kai_12_6_24.exe"
-
-// Setting up server dependencies
 const app = express();
 app.use("*", cors());
 app.use(express.json());
-
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Nakama is at ${process.env.NAKAMA_CONSOLE_ADDRESS}`);
 });
-
 app.get("/download", async (request, response) => {
   console.log("Attempting to download file from:", gamePath);
-
   response.download(gamePath, "Theous Kai.exe", (err) => {
     if (err) {
       console.error("Error during file download:", err);
@@ -40,7 +30,6 @@ app.get("/download", async (request, response) => {
     }
   });
 });
-
 const loginAdmin = async (adminUsername, adminPassword) => {
   return await axios
     .post(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate`, {
@@ -54,11 +43,9 @@ const loginAdmin = async (adminUsername, adminPassword) => {
       throw err;
     });
 };
-
 app.post("/admin/login", async (request, response) => {
   const adminUsername = request.body["username"];
   const adminPassword = request.body["password"];
-
   if (request.body["username"] != "" && request.body["password"] != "") {
     await loginAdmin(adminUsername, adminPassword)
       .then((result) => {
@@ -69,7 +56,6 @@ app.post("/admin/login", async (request, response) => {
       });
   }
 });
-
 app.get("/admin/players", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -77,7 +63,6 @@ app.get("/admin/players", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .get(`${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account`, {
       headers: {
@@ -88,7 +73,6 @@ app.get("/admin/players", async (request, response) => {
       return response.status(201).json(result.data);
     });
 });
-
 app.get("/admin/players/:playerId", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -96,7 +80,6 @@ app.get("/admin/players/:playerId", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .get(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`,
@@ -110,7 +93,6 @@ app.get("/admin/players/:playerId", async (request, response) => {
       return response.status(201).json(result.data);
     });
 });
-
 app.post("/admin/logout", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -118,7 +100,6 @@ app.post("/admin/logout", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .post(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`,
@@ -135,7 +116,6 @@ app.post("/admin/logout", async (request, response) => {
       return response.status(500).json({ message: "Failed!" });
     });
 });
-
 app.post("/purchase", async (request, response) => {
   let authToken;
   await loginAdmin("theousKaiAdmin1", "NCST_thesis")
@@ -147,17 +127,13 @@ app.post("/purchase", async (request, response) => {
         .status(401)
         .json({ message: "You are not authorized to do this." });
     });
-
   const gemAmount = request.body["gemAmount"];
   const phpAmount = request.body["phpAmount"];
   const userId = request.body["userId"];
   const phoneNumber = request.body["phoneNumber"];
-
   const collection = "playerData";
   const key = "playerInfo";
-
   let userCurrentData;
-
   await axios
     .get(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/storage/${collection}/${key}/${userId}`,
@@ -170,7 +146,6 @@ app.post("/purchase", async (request, response) => {
     .then((result) => {
       userCurrentData = result.data;
     });
-
   const dateAndTimeNow = new Date(Date.now());
   const formattedDateAndTimeNow = dateAndTimeNow.toLocaleString("en-PH", {
     year: "numeric",
@@ -179,41 +154,27 @@ app.post("/purchase", async (request, response) => {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true, // Use 12-hour format
+    hour12: true,
   });
-
   const purchaseInfo = {
     time: formattedDateAndTimeNow,
     gcashNumber: "+639" + phoneNumber,
     gemAmount: Number(gemAmount),
     phpAmount: phpAmount,
   };
-
   let decodedUserData = JSON.parse(userCurrentData.value);
-
-  // Ensure the property exists and is an array
   if (decodedUserData?.purchaseHistory == undefined) {
-    decodedUserData["purchaseHistory"] = []; // Initialize as an empty array if it doesn't exist or isn't an array
+    decodedUserData["purchaseHistory"] = [];
   }
   decodedUserData["purchaseHistory"].push(purchaseInfo);
   decodedUserData["premiumCurrency"] =
     decodedUserData["premiumCurrency"] + Number(gemAmount);
-
-  //   if (
-  //     decodedUserData["purchaseHistory"] ||
-  //     !Array.isArray(decodedUserData["purchaseHistory"])
-  //   ) {
-  //   }
-
-  // Add an item to the array
-
   const storageUpdatePayload = {
     value: JSON.stringify(decodedUserData),
     version: userCurrentData.version,
     permission_read: userCurrentData.permission_read,
     permission_write: userCurrentData.permission_write,
   };
-
   await axios
     .put(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/storage/${collection}/${key}/${userId}`,
@@ -227,7 +188,6 @@ app.post("/purchase", async (request, response) => {
     .then((result) => {
       console.log("bruh");
     });
-
   await axios.post(
     `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/authenticate/logout`,
     {
@@ -236,10 +196,8 @@ app.post("/purchase", async (request, response) => {
       },
     }
   );
-
   return response.status(200).json({ message: "Success" });
 });
-
 app.get("/player/storage/:playerId", async (request, response) => {
   const collection = "playerData";
   const key = "playerInfo";
@@ -257,7 +215,6 @@ app.get("/player/storage/:playerId", async (request, response) => {
       return response.status(201).json({ result: result.data });
     });
 });
-
 app.post("/ban/:playerId", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -265,7 +222,6 @@ app.post("/ban/:playerId", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .post(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}/ban`,
@@ -285,7 +241,6 @@ app.post("/ban/:playerId", async (request, response) => {
       return response.status(501).json({ message: "Failed" });
     });
 });
-
 app.post("/unban/:playerId", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -293,7 +248,6 @@ app.post("/unban/:playerId", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .post(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}/unban`,
@@ -313,7 +267,6 @@ app.post("/unban/:playerId", async (request, response) => {
       return response.status(501).json({ message: "Failed" });
     });
 });
-
 app.delete("/delete/:playerId", async (request, response) => {
   let authToken = request.headers["authorization"];
   if (authToken == null) {
@@ -321,7 +274,6 @@ app.delete("/delete/:playerId", async (request, response) => {
       .status(401)
       .json({ message: "You are not authorized to do this." });
   }
-
   await axios
     .delete(
       `${process.env.NAKAMA_CONSOLE_ADDRESS}/v2/console/account/${request.params.playerId}`,
