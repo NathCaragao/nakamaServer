@@ -1,0 +1,5 @@
+FROM heroiclabs/nakama:latest
+
+COPY local.yml /nakama/data/local.yml
+
+ENTRYPOINT ["/bin/sh", "-ecx", "exec /nakama/nakama --name TheousKai --config /nakama/data/local.yml --socket.server_key \"TheousKai\" --database.address postgres://postgres:localdb@your-postgres-service:5432/nakama"]
