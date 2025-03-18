@@ -26,9 +26,6 @@ RUN mkdir -p /var/lib/postgresql/data && \
 COPY --from=node-builder /backend/build/*.js /nakama/data/modules/build/
 COPY local.yml /nakama/data/
 
-# Expose necessary ports
-EXPOSE 7349 7350 7351 5432
-
 # Create startup script with no sudo commands
 RUN echo '#!/bin/bash \n\
     # Start PostgreSQL service \n\
@@ -52,6 +49,7 @@ RUN echo '#!/bin/bash \n\
     exec /nakama/nakama --name TheousKai --config /nakama/data/local.yml --socket.server_key "TheousKai" --database.address postgres:localdb@localhost:5432/nakama \n\
     ' > /nakama/start.sh && chmod +x /nakama/start.sh
 
-
+# Expose necessary ports
+EXPOSE 7349 7350 7351 5432
 
 ENTRYPOINT ["/nakama/start.sh"]
