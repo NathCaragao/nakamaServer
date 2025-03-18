@@ -50,6 +50,6 @@ RUN echo '#!/bin/bash \n\
     ' > /nakama/start.sh && chmod +x /nakama/start.sh
 
 # Expose necessary ports
-EXPOSE 7349 7350 7351 5432
+EXPOSE 7349 7350 7351
 
 ENTRYPOINT ["/nakama/start.sh"]
