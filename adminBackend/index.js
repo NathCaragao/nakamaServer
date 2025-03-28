@@ -20,7 +20,7 @@ const gamePath = path.join(
 
 // Setting up server dependencies
 const app = express();
-app.use("*", cors());
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT;
@@ -65,6 +65,7 @@ app.post("/admin/login", async (request, response) => {
         return response.status(201).json({ token: result });
       })
       .catch((err) => {
+        console.log(err);
         return response.status(501).json({ message: err });
       });
   }
