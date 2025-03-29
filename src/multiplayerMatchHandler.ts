@@ -1,13 +1,10 @@
 type PlayerMultiplayerData = {
   isHost: boolean;
-
   playerData: {
     nakamaData: nkruntime.Presence;
     displayName: String;
   };
-
   isReady: boolean;
-
   isStarted: boolean;
   ongoingMatchData: {
     direction: any;
@@ -21,7 +18,6 @@ type PlayerMultiplayerData = {
     character: String;
   };
 };
-
 enum MessageOpCode {
   DATA_FROM_SERVER = 1,
   UPDATE_DISPLAY_NAME,
@@ -34,16 +30,13 @@ enum MessageOpCode {
   ONGOING_PLAYER_LEFT,
   PLAYER_UPDATE_USED_CHARACTER,
 }
-
 enum MatchStatus {
   LOBBY = 1,
   ONGOING = 2,
 }
-
 const getNumberOfPlayers = function (playersList: Object) {
   return Object.keys(playersList).length;
 };
-
 const matchInit1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -54,7 +47,6 @@ const matchInit1 = function (
   var currentMatchStatus: MatchStatus = MatchStatus.LOBBY;
   const initialLabel = { matchStatus: MatchStatus.LOBBY };
   var firstPlacePlayer: any = null;
-
   return {
     state: {
       presences,
@@ -66,7 +58,6 @@ const matchInit1 = function (
     label: JSON.stringify(initialLabel),
   };
 };
-
 const matchJoinAttempt1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -82,7 +73,6 @@ const matchJoinAttempt1 = function (
   rejectMessage?: string | undefined;
 } | null {
   let currentNumberOfPlayersInMatch = getNumberOfPlayers(state.presences);
-
   return {
     state,
     accept:
@@ -90,7 +80,6 @@ const matchJoinAttempt1 = function (
       state.currentMatchStatus != MatchStatus.ONGOING,
   };
 };
-
 const matchJoin1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -102,16 +91,12 @@ const matchJoin1 = function (
 ): { state: nkruntime.MatchState } | null {
   presences.forEach(function (presence) {
     state.presences[presence.userId] = {
-      // This is only true for reasons
       isHost: true,
-
       playerData: {
         nakamaData: presence,
         displayName: "",
       },
-
       isReady: false,
-
       isStarted: false,
       ongoingMatchData: {
         direction: 0,
@@ -126,12 +111,10 @@ const matchJoin1 = function (
       },
     };
   });
-
   return {
     state,
   };
 };
-
 const matchLeave1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -148,12 +131,10 @@ const matchLeave1 = function (
     );
     delete state.presences[presence.userId];
   });
-
   return {
     state,
   };
 };
-
 const matchLoop1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -163,15 +144,9 @@ const matchLoop1 = function (
   state: nkruntime.MatchState,
   messages: nkruntime.MatchMessage[]
 ): { state: nkruntime.MatchState } | null {
-  // Check if host is still in match
-  // MIGHT BE BETTER MOVED TO MATCH_LEAVE() AND ADD A BROADCAST WHEN THE HOST LEAVES
-  // SO THAT CLIENT CAN HANDLE IT AND TERMINATE THE MATCH THEN MOVE TO NO_MATCH_GUI
-
-  // Process messages from clients
   messages.forEach(function (message) {
     const dataString = arrayBufferToString(message.data);
     const dataJson = JSON.parse(dataString);
-
     if (message.opCode == MessageOpCode.UPDATE_HOST) {
       state.presences[dataJson.userId].isHost = dataJson.payload.isHost;
     } else if (message.opCode == MessageOpCode.UPDATE_DISPLAY_NAME) {
@@ -188,25 +163,18 @@ const matchLoop1 = function (
       if (state?.presences[dataJson.userId]?.ongoingMatchData) {
         state.presences[dataJson.userId].ongoingMatchData.direction =
           dataJson.payload.ongoingMatchData.direction;
-
         state.presences[dataJson.userId].ongoingMatchData.isJumping =
           dataJson.payload.ongoingMatchData.isJumping;
-
         state.presences[dataJson.userId].ongoingMatchData.isAttacking =
           dataJson.payload.ongoingMatchData.isAttacking;
-
         state.presences[dataJson.userId].ongoingMatchData.isSkill =
           dataJson.payload.ongoingMatchData.isSkill;
-
         state.presences[dataJson.userId].ongoingMatchData.velocity =
           dataJson.payload.ongoingMatchData.velocity.toString();
-
         state.presences[dataJson.userId].ongoingMatchData.weaponMode =
           dataJson.payload.ongoingMatchData.weaponMode;
-
         state.presences[dataJson.userId].ongoingMatchData.position =
           dataJson.payload.ongoingMatchData.position.toString();
-
         state.presences[dataJson.userId].ongoingMatchData.health =
           dataJson.payload.ongoingMatchData.health;
       }
@@ -221,8 +189,6 @@ const matchLoop1 = function (
       );
     }
   });
-
-  // Check the current match status
   if (getNumberOfPlayers(state.presences) >= 2) {
     let isEveryPlayerStarted = true;
     Object.keys(state.presences).forEach(function (presenceId) {
@@ -236,13 +202,10 @@ const matchLoop1 = function (
       );
     }
   }
-
-  // Broadcast message to every client
   dispatcher.broadcastMessage(
     MessageOpCode.DATA_FROM_SERVER,
     JSON.stringify(state)
   );
-
   if (getNumberOfPlayers(state.presences) == 0) {
     state.emptyTicks++;
     if (state.emptyTicks == 150) {
@@ -251,12 +214,10 @@ const matchLoop1 = function (
   } else {
     state.emptyTicks = 0;
   }
-
   return {
     state,
   };
 };
-
 function arrayBufferToString(buffer: ArrayBuffer): string {
   let result = "";
   const bytes = new Uint8Array(buffer);
@@ -265,7 +226,6 @@ function arrayBufferToString(buffer: ArrayBuffer): string {
   }
   return result;
 }
-
 const matchTerminate1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -279,7 +239,6 @@ const matchTerminate1 = function (
     state,
   };
 };
-
 const matchSignal1 = function (
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -290,7 +249,6 @@ const matchSignal1 = function (
   data: string
 ): { state: nkruntime.MatchState; data?: string } | null {
   logger.debug("Lobby match signal received: " + data);
-
   return {
     state,
     data: "Lobby match signal received: " + data,
