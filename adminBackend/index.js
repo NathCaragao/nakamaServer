@@ -13,7 +13,7 @@ const gamePath = path.join(
   "Theous Kai_12_6_24.exe"
 );
 const app = express();
-app.use("*", cors());
+app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
@@ -52,6 +52,7 @@ app.post("/admin/login", async (request, response) => {
         return response.status(201).json({ token: result });
       })
       .catch((err) => {
+        console.log(err);
         return response.status(501).json({ message: err });
       });
   }
