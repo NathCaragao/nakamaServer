@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import gcashLogo from "../../../assets/gcash-logo.png";
 import { useAuth } from "../../AuthContextProvider/AuthContextProvider";
-
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
-
 const confirmPurchase = async (
   gemAmount,
   phpAmount,
@@ -27,12 +24,10 @@ const confirmPurchase = async (
     },
   });
 };
-
 const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
   const { authToken } = useAuth();
   const [userName, setUserName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     confirmPurchase(gemAmount, phpAmount, userId, authToken, phoneNumber).then(
@@ -41,7 +36,6 @@ const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
       }
     );
   };
-
   useEffect(() => {
     const getUserDisplayName = async (playerId) => {
       await axios
@@ -56,7 +50,6 @@ const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
     };
     getUserDisplayName(userId);
   }, []);
-
   return (
     <div className="row w-100 h-100 bg-primary align-items-center justify-content-center p-0 m-0">
       <div className="col-6 bg-white text-center rounded-4">
@@ -98,5 +91,4 @@ const ConfirmPurchase = ({ gemAmount, phpAmount, setSuccessFlag, userId }) => {
     </div>
   );
 };
-
 export default ConfirmPurchase;

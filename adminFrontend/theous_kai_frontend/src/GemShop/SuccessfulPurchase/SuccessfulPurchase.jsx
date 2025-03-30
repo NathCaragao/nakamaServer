@@ -1,7 +1,5 @@
 import React from "react";
-
 import gcashLogo from "../../../assets/gcash-logo.png";
-
 const SuccessfulPurchase = () => {
   return (
     <div className="row w-100 h-100 bg-primary align-items-center justify-content-center p-0 m-0">
@@ -22,5 +20,4 @@ const SuccessfulPurchase = () => {
     </div>
   );
 };
-
 export default SuccessfulPurchase;

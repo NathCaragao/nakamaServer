@@ -5,7 +5,6 @@ import AdminLoginPage from "./AdminLoginPage/AdminLoginPage";
 import AdminDashboard from "./AdminDashboard/AdminDashboard";
 import faviconImage from "../assets/heraclesPortrait.png";
 import GemShop from "./GemShop/GemShop";
-
 function App() {
   useEffect(() => {
     document.title = "Theous Kai - Greek Mythology Platformer Game";
@@ -26,5 +25,4 @@ function App() {
     </>
   );
 }
-
 export default App;

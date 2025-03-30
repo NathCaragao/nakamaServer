@@ -2,7 +2,6 @@ body, html {
     margin: 0;
     padding: 0;
 }
-
 .main-div{
     height: 100vh;
     background-size: contain;
@@ -10,7 +9,6 @@ body, html {
 .hero-content{
     background-color: yellow;
 }
-
 .hero-text{
     text-align: justify;
 }

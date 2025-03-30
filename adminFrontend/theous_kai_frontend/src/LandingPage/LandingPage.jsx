@@ -4,24 +4,19 @@ import windowsLogo from "../../assets/windows-logo.png";
 import faviconImage from "../../assets/heraclesPortrait.png";
 import axios from "axios";
 import { saveAs } from "file-saver";
-
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
-
 const downloadGame = async () => {
   try {
     const response = await axios.get(`${cloudServer}/download`, {
-      responseType: "blob", // Ensure the response is treated as a file
+      responseType: "blob",
     });
-
-    // Use FileSaver to trigger the download
     saveAs(response.data, "Theous Kai.exe");
   } catch (error) {
     console.error("Error downloading the file:", error);
   }
 };
-
 const LandingPage = () => {
   return (
     <>
@@ -57,5 +52,4 @@ const LandingPage = () => {
     </>
   );
 };
-
 export default LandingPage;
