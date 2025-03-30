@@ -1,11 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContextProvider/AuthContextProvider";
-
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
-
 const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
   await axios
     .post(`${cloudServer}/ban/${playerId}`, null, {
@@ -21,7 +19,6 @@ const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
       alert("Error in Banning Player. Refresh page and try again.");
     });
 };
-
 const unbanPlayer = async (dummyState, setDummyState, playerId, authToken) => {
   await axios
     .post(`${cloudServer}/unban/${playerId}`, null, {
@@ -37,7 +34,6 @@ const unbanPlayer = async (dummyState, setDummyState, playerId, authToken) => {
       alert("Error in unbanning Player. Refresh page and try again.");
     });
 };
-
 const deletePlayer = async (
   dummyState,
   setDummyState,
@@ -60,7 +56,6 @@ const deletePlayer = async (
       alert("Error in deleting Player. Refresh page and try again.");
     });
 };
-
 const UserModal = ({
   playerId,
   setPlayerId,
@@ -70,9 +65,7 @@ const UserModal = ({
   const { authToken } = useAuth();
   const [playerData, setPlayerData] = useState();
   const [playerStorageData, setPlayerStorageData] = useState();
-
   const [dummyState, setDummyState] = useState(0);
-
   useEffect(() => {
     const getUserData = async (playerId) => {
       if (playerId == "") return;
@@ -88,7 +81,6 @@ const UserModal = ({
     };
     getUserData(playerId);
   }, [playerId, authToken, dummyState]);
-
   useEffect(() => {
     const getUserStorageData = async (playerId) => {
       if (playerId == "") return;
@@ -104,7 +96,6 @@ const UserModal = ({
     };
     getUserStorageData(playerId);
   }, [playerId, dummyState]);
-
   return (
     <div
       className="modal fade"
@@ -231,5 +222,4 @@ const UserModal = ({
     </div>
   );
 };
-
 export default UserModal;

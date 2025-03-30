@@ -2,28 +2,23 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthContextProvider/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
-
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
-
 const AdminLoginPage = () => {
   const { authToken, setAuthToken } = useAuth();
   const navigate = useNavigate();
-
   const authTokenChecker = useEffect(() => {
     if (authToken != "") {
       navigate("/admin/dashboard");
       return;
     }
   }, [authToken]);
-
   const adminLogin = async (adminUsername, adminPassword) => {
     let adminLoginPayload = {
       username: adminUsername,
       password: adminPassword,
     };
-
     await axios
       .post(`${cloudServer}/admin/login`, adminLoginPayload)
       .then((response) => {
@@ -33,15 +28,12 @@ const AdminLoginPage = () => {
         alert("Error occured while signing in. Try again");
       });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     await adminLogin(adminUsername, adminPassword);
   };
-
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
-
   return (
     <>
       <div className="container-fluid main-div p-0 m-0">
@@ -99,5 +91,4 @@ const AdminLoginPage = () => {
     </>
   );
 };
-
 export default AdminLoginPage;

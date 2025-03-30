@@ -5,11 +5,9 @@ import axios from "axios";
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
-
 const UserCard = ({ playerId, playerDisplayName, onClick }) => {
   const { authToken } = useAuth();
   const [newEmail, setNewEmail] = useState();
-
   useEffect(() => {
     const getUserEmail = async (playerId) => {
       await axios
@@ -24,7 +22,6 @@ const UserCard = ({ playerId, playerDisplayName, onClick }) => {
     };
     getUserEmail(playerId);
   }, []);
-
   return (
     <>
       <div
@@ -47,5 +44,4 @@ const UserCard = ({ playerId, playerDisplayName, onClick }) => {
     </>
   );
 };
-
 export default UserCard;

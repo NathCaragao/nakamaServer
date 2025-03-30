@@ -6,7 +6,6 @@ import axios from "axios";
 import { useAuth } from "../AuthContextProvider/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
 import UserModal from "./UserModal/UserModal";
-
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
   "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
@@ -14,18 +13,14 @@ const cloudServer =
 const Tabs = {
   Players: "players",
 };
-
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(Tabs.Players);
   const [headerMessage, setHeaderMessage] = useState("");
   const [players, setPlayers] = useState([]);
   const { authToken, logout } = useAuth();
   const navigate = useNavigate();
-
   const [selectedPlayerId, setSelectedPlayerId] = useState("");
   const [renderState, setRenderState] = useState(0);
-
-  // Add an effect to watch for token changes
   useEffect(() => {
     console.log("Current authToken:", authToken);
     if (authToken === "") {
@@ -33,7 +28,6 @@ const AdminDashboard = () => {
       navigate("/admin");
     }
   }, [authToken, navigate]);
-
   const logoutAdmin = async () => {
     try {
       await axios.post(`${cloudServer}/admin/logout`, null, {
@@ -47,7 +41,6 @@ const AdminDashboard = () => {
       logout();
     }
   };
-
   useEffect(() => {
     const fetchPlayers = async (authToken) => {
       let listOfPlayers = [];
@@ -58,7 +51,7 @@ const AdminDashboard = () => {
               Authorization: `Bearer ${authToken}`,
             },
           });
-          listOfPlayers = result.data.users; // Ensure you're accessing the correct property
+          listOfPlayers = result.data.users;
         } catch (error) {
           console.error("Error fetching players:", error);
           await logout();
@@ -68,20 +61,16 @@ const AdminDashboard = () => {
       }
       return listOfPlayers;
     };
-
     if (activeTab === Tabs.Players) {
-      // Wait for fetchPlayers to complete and then update the state
       const fetchData = async () => {
         const playersData = await fetchPlayers(authToken);
-        setPlayers(playersData); // Now update the state with the resolved data
+        setPlayers(playersData);
       };
-
-      fetchData(); // Call the async function to fetch and set players
+      fetchData();
       console.log(players);
       setHeaderMessage("List of Theous Kai Players");
     }
-  }, [activeTab, authToken, renderState]); // Make sure authToken is also part of the dependency array
-
+  }, [activeTab, authToken, renderState]);
   return (
     <>
       <div className="container-fluid main-div p-0 m-0">
@@ -111,7 +100,6 @@ const AdminDashboard = () => {
         </div>
         <div className="row w-100 p-0 m-0 bg-primary-subtle">
           {
-            // Depending on active tab, change the contents of this div
             <>
               <h3 className="m-0 header-message py-2">{headerMessage}</h3>
               {players.length == 1 ? (
@@ -135,7 +123,6 @@ const AdminDashboard = () => {
             </>
           }
         </div>
-
         <UserModal
           playerId={selectedPlayerId}
           setPlayerId={setSelectedPlayerId}
@@ -146,5 +133,4 @@ const AdminDashboard = () => {
     </>
   );
 };
-
 export default AdminDashboard;
