@@ -4,7 +4,7 @@ import { useAuth } from "../../AuthContextProvider/AuthContextProvider";
 
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
-  "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
+  "https://5000-https://nathcaragao-nakamaserve-bqsmc7orbct.ws-us120.gitpod.io/";
 
 const banPlayer = async (dummyState, setDummyState, playerId, authToken) => {
   await axios

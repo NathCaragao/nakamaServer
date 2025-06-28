@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const localServer = "http://127.0.0.1:5000";
 const cloudServer =
-  "https://5000-nathcaragao-nakamaserve-wqsrj0o3ahe.ws-us117.gitpod.io";
+  "https://5000-https://nathcaragao-nakamaserve-bqsmc7orbct.ws-us120.gitpod.io/";
 
 const AdminLoginPage = () => {
   const { authToken, setAuthToken } = useAuth();
